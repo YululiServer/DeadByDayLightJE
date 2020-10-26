@@ -1,0 +1,13 @@
+name: DeadByDayLightJE
+version: @version@
+main: com.github.rain1208.deadbydaylightje.DeadByDayLightJE
+api-version: 1.12
+commands:
+  dstart:
+    description: ""
+  d_end:
+    description: ""
+  dstop:
+    description: ""
+  dkiller:
+    description: ""
