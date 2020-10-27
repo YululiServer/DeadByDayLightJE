@@ -1,11 +1,15 @@
 package com.github.rain1208.deadbydaylightje.game
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
-import com.github.rain1208.deadbydaylightje.characters.IGamePlayer
 import com.github.rain1208.deadbydaylightje.characters.Killer
 import com.github.rain1208.deadbydaylightje.characters.Survivor
 import com.github.rain1208.deadbydaylightje.maps.Map
+import net.md_5.bungee.api.ChatColor
+import net.md_5.bungee.api.ChatMessageType
+import net.md_5.bungee.api.chat.BaseComponent
+import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
+import org.bukkit.Server
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.scheduler.BukkitRunnable
@@ -44,8 +48,10 @@ class Game {
         for (survivor in survivor.values) {
             survivor.initPlayer(map.getSpawn())
         }
+
         object :BukkitRunnable(){
             override fun run() {
+                println(killers)
                 for (killer in killers.values) {
                     killer.initPlayer(map.getKillerSpawn())
                 }
@@ -80,6 +86,7 @@ class Game {
 
     fun setKiller(player: Player) {
         if (survivor.contains(player.name)) leave(player)
+        killers[player.name] = Killer(player)
         Bukkit.broadcastMessage("${player.name} さんがキラーになりました")
     }
 }

@@ -5,6 +5,7 @@ import com.github.rain1208.deadbydaylightje.commands.SetKiller
 import com.github.rain1208.deadbydaylightje.commands.StartGame
 import com.github.rain1208.deadbydaylightje.commands.StopGame
 import com.github.rain1208.deadbydaylightje.game.Game
+import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class DeadByDayLightJE : JavaPlugin() {
@@ -43,6 +44,9 @@ class DeadByDayLightJE : JavaPlugin() {
         if (game == null) {
             game = Game()
             logger.info("新しくゲームが作成されました")
+            for (player in Bukkit.getOnlinePlayers()) {
+                game?.join(player)
+            }
         } else {
             logger.info("ゲームは既に作られています")
         }
