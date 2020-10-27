@@ -25,6 +25,7 @@ class DeadByDayLightJE : JavaPlugin() {
 
     override fun onEnable() {
         instance = this
+        server.pluginManager.registerEvents(EventListener(),this)
 
         //Configの追加
         saveDefaultConfig()
