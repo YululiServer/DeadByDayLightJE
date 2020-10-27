@@ -21,6 +21,10 @@ class Map {
             val pos = spawn.split(",").map { it.toDouble() }
             killerSpawn.add(Location(world,pos[0],pos[1],pos[2],0f,0f))
         }
+        for (generator in config.getStringList("world.generator")) {
+            val pos = generator.split(",").map { it.toDouble() }
+            generatorPoint.add(Location(world,pos[0],pos[1],pos[2]))
+        }
     }
 
     fun getSpawn():Location = spawnPoint.random()

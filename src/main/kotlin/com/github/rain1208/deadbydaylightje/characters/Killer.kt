@@ -1,5 +1,6 @@
 package com.github.rain1208.deadbydaylightje.characters
 
+import com.github.rain1208.deadbydaylightje.maps.Generator
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -17,5 +18,9 @@ class Killer(val player: Player): IGamePlayer {
         player.inventory.addItem(axe)
 
         player.teleport(spawn)
+    }
+
+    override fun power(generator: Generator) {
+        println(generator.count)
     }
 }

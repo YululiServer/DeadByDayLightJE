@@ -1,15 +1,14 @@
 package com.github.rain1208.deadbydaylightje.game
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
+import com.github.rain1208.deadbydaylightje.characters.IGamePlayer
 import com.github.rain1208.deadbydaylightje.characters.Killer
 import com.github.rain1208.deadbydaylightje.characters.Survivor
+import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Map
-import net.md_5.bungee.api.ChatColor
-import net.md_5.bungee.api.ChatMessageType
-import net.md_5.bungee.api.chat.BaseComponent
-import net.md_5.bungee.api.chat.TextComponent
 import org.bukkit.Bukkit
-import org.bukkit.Server
+import org.bukkit.Location
+import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.scheduler.BukkitRunnable
@@ -18,10 +17,18 @@ class Game {
     val survivor: MutableMap<String, Survivor> = mutableMapOf()
     val killers: MutableMap<String, Killer> = mutableMapOf()
 
+    val generators: ArrayList<Generator> = arrayListOf()
+
     lateinit var map:Map
+
+    val gameTask = GameTask(this)
 
     fun start() {
         map = Map()
+
+        for (loc in map.generatorPoint) {
+            generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
+        }
 
         Bukkit.getPluginManager().registerEvents(GameEventListener(this), DeadByDayLightJE.instance)
         Bukkit.broadcastMessage("ゲームを開始します")
@@ -34,8 +41,9 @@ class Game {
                     cancel()
                     for (player in Bukkit.getOnlinePlayers()) {
                         player.sendTitle("スタート!", "", 20, 50, 20)
-                        startPlayer()
                     }
+                    gameTask.runTaskTimer(DeadByDayLightJE.instance,0,20)
+                    startPlayer()
                 } else {
                     Bukkit.broadcastMessage("ゲーム開始まで: $count")
                     count--
@@ -61,6 +69,7 @@ class Game {
 
     fun stop() {
         HandlerList.unregisterAll(GameEventListener(this))
+        gameTask.cancel()
         with(DeadByDayLightJE.instance) {
             game = null
             logger.info("ゲームを終了しました")
@@ -82,6 +91,12 @@ class Game {
             killers.remove(player.name)
             Bukkit.broadcastMessage("キラー: ${player.name} さんがゲームから退出しました")
         }
+    }
+
+    fun getPlayer(player: Player): IGamePlayer? {
+        if (survivor.contains(player.name)) return survivor[player.name]
+        if (killers.contains(player.name)) return killers[player.name]
+        return null
     }
 
     fun setKiller(player: Player) {
