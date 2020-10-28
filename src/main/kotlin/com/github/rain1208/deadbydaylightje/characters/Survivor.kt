@@ -14,7 +14,7 @@ class Survivor(val player: Player): IGamePlayer {
         player.teleport(spawn)
     }
 
-    override fun power(generator: Generator) {
+    override fun onUse(generator: Generator) {
         generator.count++
         player.sendMessage("発電中 :${generator.count}")
         println(generator.count)

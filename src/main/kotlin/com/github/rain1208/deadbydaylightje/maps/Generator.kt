@@ -17,7 +17,7 @@ class Generator(val armorStand: ArmorStand) {
         } else {
             for (entity in armorStand.getNearbyEntities(4.0,10.0,4.0)) {
                 if (entity !is Player) continue
-                if (entity.isSneaking) game.getPlayer(entity)?.power(this)
+                if (entity.isSneaking) game.getPlayer(entity)?.onUse(this)
             }
         }
     }

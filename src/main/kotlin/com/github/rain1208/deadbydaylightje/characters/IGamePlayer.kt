@@ -9,5 +9,5 @@ interface IGamePlayer {
     //体力　空腹度 アイテムの再配布
     fun initPlayer(spawn: Location)
 
-    fun power(generator: Generator)
+    fun onUse(generator: Generator)
 }

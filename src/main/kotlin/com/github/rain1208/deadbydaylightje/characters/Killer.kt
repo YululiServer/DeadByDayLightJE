@@ -20,7 +20,7 @@ class Killer(val player: Player): IGamePlayer {
         player.teleport(spawn)
     }
 
-    override fun power(generator: Generator) {
-        println(generator.count)
+    override fun onUse(generator: Generator) {
+
     }
 }
