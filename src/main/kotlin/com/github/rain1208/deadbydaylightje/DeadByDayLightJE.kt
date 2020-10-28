@@ -18,7 +18,7 @@ class DeadByDayLightJE : JavaPlugin() {
             "dstart" to StartGame,
             "d_end" to EndGame,
             "dstop" to StopGame,
-            "dkiller" to SetKiller
+            "oni" to SetKiller
     )
 
     var game: Game? = null
@@ -64,7 +64,7 @@ class DeadByDayLightJE : JavaPlugin() {
             getCommand(name)?.run {
                 setExecutor(executor)
                 logger.info("$name を読み込みました")
-            } ?: logger.info("$name が読み込めませんでした")
+            } ?: logger.warning("$name が読み込めませんでした")
         }
     }
 
