@@ -3,15 +3,19 @@ package com.github.rain1208.deadbydaylightje.maps
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.World
+import kotlin.random.Random
 
 class Map {
     private val spawnPoint = arrayListOf<Location>()
     private val killerSpawn = arrayListOf<Location>()
     val generatorPoint = arrayListOf<Location>()
 
+    var world: World
+
     init {
         val config = DeadByDayLightJE.instance.config
-        val world = Bukkit.getWorld(config.getString("world.name") ?: "world") ?: Bukkit.getWorld("world")
+        world = Bukkit.getWorld(config.getString("world.name") ?: "world") ?: Bukkit.getWorld("world")
 
         for (spawn in config.getStringList("world.spawn")) {
             val pos = spawn.split(",").map { it.toDouble() }
@@ -27,7 +31,7 @@ class Map {
         }
     }
 
-    fun getSpawn():Location = spawnPoint.random()
+    fun getSpawn():Location = spawnPoint[Random.nextInt(spawnPoint.size)]
 
-    fun getKillerSpawn(): Location = killerSpawn.random()
+    fun getKillerSpawn(): Location = killerSpawn[Random.nextInt(killerSpawn.size)]
 }
