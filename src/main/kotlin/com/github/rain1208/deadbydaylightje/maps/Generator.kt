@@ -2,23 +2,42 @@ package com.github.rain1208.deadbydaylightje.maps
 
 import com.github.rain1208.deadbydaylightje.game.Game
 import org.bukkit.Bukkit
+import org.bukkit.Particle
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 
 class Generator(val armorStand: ArmorStand) {
-    var count = 0
+    var occupancyRate:Double = 0.0
     var isAlive = true
 
+    init {
+        armorStand.isVisible = false
+    }
+
     fun baseTick(game: Game) {
-        if (count >= 10) {
+        if (!isAlive) return
+
+        sendParticle()
+        for (entity in armorStand.getNearbyEntities(1.5,2.0,1.5)) {
+            if (entity !is Player) continue
+            if (entity.isSneaking) game.getPlayer(entity)?.onUse(this)
+        }
+
+
+        if (occupancyRate >= 100) {
             isAlive = false
             armorStand.remove()
+            armorStand.health = 0.0
             Bukkit.broadcastMessage("発電が完了しました")
-        } else {
-            for (entity in armorStand.getNearbyEntities(4.0,10.0,4.0)) {
-                if (entity !is Player) continue
-                if (entity.isSneaking) game.getPlayer(entity)?.onUse(this)
-            }
+            return
         }
+    }
+
+    fun sendParticle() {
+        armorStand.world.spawnParticle(Particle.PORTAL,armorStand.location.add(0.0,0.5,0.0),1)
+    }
+
+    fun onActivate(repairAbility: Double) {
+        occupancyRate += repairAbility
     }
 }

@@ -1,9 +1,6 @@
 package com.github.rain1208.deadbydaylightje
 
-import com.github.rain1208.deadbydaylightje.commands.EndGame
-import com.github.rain1208.deadbydaylightje.commands.SetKiller
-import com.github.rain1208.deadbydaylightje.commands.StartGame
-import com.github.rain1208.deadbydaylightje.commands.StopGame
+import com.github.rain1208.deadbydaylightje.commands.*
 import com.github.rain1208.deadbydaylightje.game.Game
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -18,11 +15,11 @@ class DeadByDayLightJE : JavaPlugin() {
             "dstart" to StartGame,
             "d_end" to EndGame,
             "dstop" to StopGame,
-            "oni" to SetKiller
+            "oni" to SetKiller,
+            "config" to Config
     )
 
     var game: Game? = null
-
 
     override fun onEnable() {
         instance = this
@@ -69,6 +66,7 @@ class DeadByDayLightJE : JavaPlugin() {
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
+        forceStopGame()
+        logger.info("プラグインが無効化されました")
     }
 }
