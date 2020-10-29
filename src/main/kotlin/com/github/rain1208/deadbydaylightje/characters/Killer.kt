@@ -6,7 +6,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class Killer(val player: Player): IGamePlayer {
+class Killer(override val player: Player): IGamePlayer {
     override fun initPlayer(spawn: Location) {
         player.health = 20.0
         player.foodLevel = 20

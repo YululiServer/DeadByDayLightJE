@@ -11,3 +11,5 @@ commands:
     description: ""
   oni:
     description: ""
+  config:
+    description: ""
