@@ -1,4 +1,4 @@
-package com.github.rain1208.deadbydaylightje.animate
+package com.github.rain1208.deadbydaylightje.animation
 
 import org.bukkit.entity.ArmorStand
 import org.bukkit.scheduler.BukkitRunnable

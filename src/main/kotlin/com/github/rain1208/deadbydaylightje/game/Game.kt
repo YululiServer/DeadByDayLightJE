@@ -7,7 +7,6 @@ import com.github.rain1208.deadbydaylightje.characters.Survivor
 import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Map
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
@@ -25,6 +24,8 @@ class Game {
 
     fun start() {
         map = Map()
+
+        gameTask.timerStart()
 
         for (loc in map.generatorPoint) {
             generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
@@ -69,6 +70,12 @@ class Game {
 
     fun stop() {
         HandlerList.unregisterAll(GameEventListener(this))
+
+        for (generator in generators) {
+            generator.armorStand.remove()
+        }
+
+        removeTimer()
         gameTask.cancel()
         with(DeadByDayLightJE.instance) {
             game = null
@@ -99,9 +106,29 @@ class Game {
         return null
     }
 
+    fun getSurvivors(): ArrayList<Player> {
+        val players:ArrayList<Player> = arrayListOf()
+        for (survivor in survivor.values) {
+            players.add(survivor.player)
+        }
+        return players
+    }
+
+    fun getKillers(): ArrayList<Player> {
+        val players:ArrayList<Player> = arrayListOf()
+        for (killer in killers.values) {
+            players.add(killer.player)
+        }
+        return players
+    }
+
     fun setKiller(player: Player) {
         if (survivor.contains(player.name)) leave(player)
         killers[player.name] = Killer(player)
         Bukkit.broadcastMessage("${player.name} さんがキラーになりました")
+    }
+
+    fun removeTimer() {
+        gameTask.timeBar.removeAll()
     }
 }
