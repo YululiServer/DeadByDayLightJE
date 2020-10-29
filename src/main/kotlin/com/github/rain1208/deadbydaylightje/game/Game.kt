@@ -25,8 +25,6 @@ class Game {
     fun start() {
         map = Map()
 
-        gameTask.timerStart()
-
         for (loc in map.generatorPoint) {
             generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
         }
@@ -44,9 +42,13 @@ class Game {
                         player.sendTitle("スタート!", "", 20, 50, 20)
                     }
                     gameTask.runTaskTimer(DeadByDayLightJE.instance,0,20)
+                    gameTask.timeBar.createBar()
+                    gameTask.timerStart()
                     startPlayer()
+                    map.world.time = 13800
+                    map.world.setGameRuleValue("doDaylightCycle","false")
                 } else {
-                    Bukkit.broadcastMessage("ゲーム開始まで: $count")
+                    Bukkit.broadcastMessage("ゲーム開始まで: $count"+"秒")
                     count--
                 }
             }
@@ -77,6 +79,7 @@ class Game {
 
         removeTimer()
         gameTask.cancel()
+
         with(DeadByDayLightJE.instance) {
             game = null
             logger.info("ゲームを終了しました")
