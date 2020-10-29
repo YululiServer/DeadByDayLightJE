@@ -50,6 +50,7 @@ class DeadByDayLightJE : JavaPlugin() {
     }
 
     fun forceStopGame() {
+        game?.stop()
         game = null
         server.broadcastMessage("ゲームを強制終了します")
         if (autoStart()) createGame()
