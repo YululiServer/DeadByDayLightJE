@@ -18,13 +18,17 @@ class Generator(val armorStand: ArmorStand) {
         if (!isAlive) return
 
         sendParticle()
-        for (entity in armorStand.getNearbyEntities(1.5,2.0,1.5)) {
-            if (entity !is Player) continue
+        val nearPlayer = armorStand.getNearbyEntities(1.5,2.0,1.5).filterIsInstance<Player>()
+        for (entity in nearPlayer) {
             if (entity.isSneaking) game.getPlayer(entity)?.onUse(this)
         }
 
-
         if (occupancyRate >= 100) {
+            for (player in nearPlayer) {
+                if (game.getSurvivors().contains(player)) {
+                    game.survivor[player.name]?.repairComplete()
+                }
+            }
             isAlive = false
             armorStand.remove()
             armorStand.health = 0.0
