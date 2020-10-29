@@ -67,7 +67,6 @@ class DeadByDayLightJE : JavaPlugin() {
     }
 
     override fun onDisable() {
-        forceStopGame()
         logger.info("プラグインが無効化されました")
     }
 }
