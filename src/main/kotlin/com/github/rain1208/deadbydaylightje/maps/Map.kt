@@ -10,6 +10,8 @@ class Map {
     private val spawnPoint = arrayListOf<Location>()
     private val killerSpawn = arrayListOf<Location>()
     val generatorPoint = arrayListOf<Location>()
+    val jailPoint = arrayListOf<Location>()
+    val fishPoint = arrayListOf<Location>()
 
     var world: World
 
@@ -29,9 +31,20 @@ class Map {
             val pos = generator.split(",").map { it.toDouble() }
             generatorPoint.add(Location(world,pos[0],pos[1],pos[2]))
         }
+        for (fish in config.getStringList("world.fish")) {
+            val pos = fish.split(",").map { it.toDouble() }
+            fishPoint.add(Location(world,pos[0],pos[1],pos[2]))
+        }
+
+        val jail = config.getString("world.jail").split(",").map { it.toDouble() }
+        jailPoint.add(Location(world,jail[0],jail[1],jail[2]))
     }
 
     fun getSpawn():Location = spawnPoint[Random.nextInt(spawnPoint.size)]
 
     fun getKillerSpawn(): Location = killerSpawn[Random.nextInt(killerSpawn.size)]
+
+    fun getJail(): Location = jailPoint[0]
+
+    fun getFish(): Location = fishPoint[Random.nextInt(fishPoint.size)]
 }
