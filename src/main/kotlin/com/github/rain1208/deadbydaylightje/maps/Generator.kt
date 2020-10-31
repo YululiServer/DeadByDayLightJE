@@ -37,11 +37,20 @@ class Generator(val armorStand: ArmorStand) {
         }
     }
 
-    fun sendParticle() {
-        armorStand.world.spawnParticle(Particle.PORTAL,armorStand.location.add(0.0,0.5,0.0),1)
+    private fun sendParticle() {
+        armorStand.world.spawnParticle(Particle.PORTAL,armorStand.location.add(0.0,0.5,0.0),5)
+    }
+
+    fun onBreak(breakAbility: Double) {
+        if (occupancyRate - breakAbility <= 0) {
+            occupancyRate = 0.0
+        } else {
+            occupancyRate -= breakAbility
+        }
     }
 
     fun onActivate(repairAbility: Double) {
         occupancyRate += repairAbility
     }
+
 }
