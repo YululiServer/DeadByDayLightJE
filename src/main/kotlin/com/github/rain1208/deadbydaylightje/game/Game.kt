@@ -1,12 +1,14 @@
 package com.github.rain1208.deadbydaylightje.game
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
+import com.github.rain1208.deadbydaylightje.EventListener
 import com.github.rain1208.deadbydaylightje.characters.IGamePlayer
 import com.github.rain1208.deadbydaylightje.characters.Killer
 import com.github.rain1208.deadbydaylightje.characters.Survivor
 import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Map
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
@@ -17,18 +19,23 @@ class Game {
     val killers: MutableMap<String, Killer> = mutableMapOf()
 
     val generators: ArrayList<Generator> = arrayListOf()
+    var generatorCount = 0
 
     lateinit var map:Map
 
     val gameTask = GameTask(this)
+
+    var isStarted = false
 
     fun start() {
         map = Map()
 
         for (loc in map.generatorPoint) {
             generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
+            generatorCount++
         }
 
+        HandlerList.unregisterAll(EventListener())
         Bukkit.getPluginManager().registerEvents(GameEventListener(this), DeadByDayLightJE.instance)
         Bukkit.broadcastMessage("ゲームを開始します")
 
@@ -53,6 +60,7 @@ class Game {
                 }
             }
         }.runTaskTimer(DeadByDayLightJE.instance,0,20)
+        isStarted = true
     }
 
     fun startPlayer() {
@@ -71,14 +79,15 @@ class Game {
     }
 
     fun stop() {
-        HandlerList.unregisterAll(GameEventListener(this))
-
-        for (generator in generators) {
-            generator.armorStand.remove()
+        if (isStarted) {
+            HandlerList.unregisterAll(GameEventListener(this))
+            for (generator in generators) {
+                generator.armorStand.remove()
+            }
+            removeTimer()
+            gameTask.cancel()
+            isStarted = false
         }
-
-        removeTimer()
-        gameTask.cancel()
 
         with(DeadByDayLightJE.instance) {
             game = null
@@ -89,7 +98,14 @@ class Game {
 
     fun join(player: Player) {
         survivor[player.name] = Survivor(player)
-        Bukkit.broadcastMessage("${player.name} さんがゲームに参加しました")
+        Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
+    }
+
+    fun joinInMid(player: Player) {
+        survivor[player.name] = Survivor(player)
+        survivor[player.name]?.initPlayer(map.getJail())
+        Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
+        player.sendMessage("途中参加のため牢屋からスタートしました")
     }
 
     fun leave(player: Player) {
@@ -131,7 +147,9 @@ class Game {
         Bukkit.broadcastMessage("${player.name} さんがキラーになりました")
     }
 
-    fun removeTimer() {
-        gameTask.timeBar.removeAll()
-    }
+    fun isKiller(player: Player): Boolean = getKillers().contains(player)
+
+    fun isSurvivor(player: Player): Boolean = getSurvivors().contains(player)
+
+    fun removeTimer() = gameTask.timeBar.removeAll()
 }
