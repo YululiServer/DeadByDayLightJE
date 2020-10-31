@@ -1,9 +1,11 @@
 package com.github.rain1208.deadbydaylightje.characters
 
+import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.maps.Generator
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitRunnable
 
 class Survivor(override val player: Player): IGamePlayer {
     val baseRepairAbility = 1.0
@@ -12,6 +14,8 @@ class Survivor(override val player: Player): IGamePlayer {
     var isHanged = false
 
     var hp = 2
+
+    var tpJail: BukkitRunnable? = null
 
     override fun initPlayer(spawn: Location) {
         player.health = 20.0
@@ -44,7 +48,23 @@ class Survivor(override val player: Player): IGamePlayer {
         player.sendTitle("§2修理完了!!",msg,0,30,0)
     }
 
-    fun setFish(location: Location) {
-        player.teleport(location)
+    fun setFish(hook: Location, jail: Location) {
+        isHanged = true
+        player.teleport(hook)
+
+        tpJail = object : BukkitRunnable() {
+            override fun run() {
+                player.teleport(jail)
+            }
+        }
+        tpJail?.runTaskLater(DeadByDayLightJE.instance,20*30)
+    }
+
+    fun rescue(rescuer: Player) {
+        if (tpJail?.isCancelled!!) return
+        hp = 1
+        isHanged = false
+        tpJail?.cancel()
+        player.teleport(rescuer)
     }
 }

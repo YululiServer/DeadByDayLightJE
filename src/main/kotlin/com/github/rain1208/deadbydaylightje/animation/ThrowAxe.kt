@@ -23,7 +23,7 @@ class ThrowAxe(private val stand: ArmorStand,val thrower:Player): BukkitRunnable
         for (player in stand.location.world?.players!!) {
             val hitP = player.location.add(stand.width/2,0.0,stand.width/2)
             if (stand.location.distance(hitP) <= 0.8) {
-                player.damage(0.0, thrower)
+                //EntityDamageByEntityEvent(thrower,player,EntityDamageEvent.DamageCause.CUSTOM,2.0) TODO()
                 cancel()
                 stand.remove()
             } else if (stand.location.add(0.0,-1.0,0.0).distance(hitP) <= 0.8) {

@@ -93,12 +93,7 @@ class GameEventListener(val game: Game): Listener {
             val surv = game.survivor[dmg.name]
             surv?.addDamage()
             if (surv?.hp!! <= 0) {
-                surv.setFish(game.map.getFish())
-                object : BukkitRunnable() {
-                    override fun run() {
-                        dmg.teleport(game.map.getJail())
-                    }
-                }.runTaskLater(DeadByDayLightJE.instance,20*30)
+                surv.setFish(game.map.getFish(),game.map.getJail())
             } else {
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.GLOWING,10*20,1))
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.SPEED,7*20,2))
