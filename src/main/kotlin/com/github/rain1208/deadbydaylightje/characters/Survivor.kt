@@ -6,9 +6,10 @@ import org.bukkit.Location
 import org.bukkit.entity.Player
 
 class Survivor(override val player: Player): IGamePlayer {
-
     val baseRepairAbility = 1.0
     var originalRepairAbility = 9.0 //TODO("ここの数字はテストのため")
+
+    var isHanged = false
 
     var hp = 2
 
@@ -33,8 +34,6 @@ class Survivor(override val player: Player): IGamePlayer {
         generator.onActivate(baseRepairAbility + originalRepairAbility)
         val n = (generator.occupancyRate / 10).toInt()
         val msg = StringBuilder("修理率 :"+"■".repeat(n)+"□".repeat(10 - n)).toString()
-        //val text = TextComponent(msg.toString())
-        //player.spigot().sendMessage(ChatMessageType.ACTION_BAR,text)
 
         player.sendTitle("", msg,0,20,0)
     }

@@ -10,8 +10,6 @@ class GameTask(val game: Game): BukkitRunnable() {
     var time = 900
     val timeBar = BossBar()
 
-    val generatorCount = 0
-
     override fun run() {
         if (time <= 0) {
             game.stop()
