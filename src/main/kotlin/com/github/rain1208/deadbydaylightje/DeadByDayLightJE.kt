@@ -15,6 +15,7 @@ class DeadByDayLightJE : JavaPlugin() {
             "dstart" to StartGame,
             "d_end" to EndGame,
             "dstop" to StopGame,
+            "dstatus" to GameStatus,
             "oni" to SetKiller,
             "config" to Config
     )
