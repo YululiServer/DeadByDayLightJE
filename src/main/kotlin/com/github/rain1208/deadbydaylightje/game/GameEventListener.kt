@@ -2,6 +2,7 @@ package com.github.rain1208.deadbydaylightje.game
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.animation.ThrowAxe
+import com.github.rain1208.deadbydaylightje.characters.Survivor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
@@ -12,6 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -57,6 +59,22 @@ class GameEventListener(val game: Game): Listener {
     fun onLeave(event: PlayerQuitEvent) {
         game.gameTask.timeBar.removePlayer(event.player)
         game.leave(event.player)
+    }
+
+    @EventHandler
+    fun onSneak(event: PlayerToggleSneakEvent) {
+        if (event.isSneaking) return
+        if (!game.isSurvivor(event.player)) return
+
+        val nearPlayer = event.player.getNearbyEntities(1.0,1.0,1.0).filterIsInstance<Player>()
+        for (nplayer in nearPlayer) {
+            val player = game.getPlayer(nplayer)
+            if (player !is Survivor) return
+            if (player.isHanged) {
+                player.rescue(event.player)
+                return
+            }
+        }
     }
 
     @EventHandler
