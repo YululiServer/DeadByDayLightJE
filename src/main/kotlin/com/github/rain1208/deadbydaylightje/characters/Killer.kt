@@ -2,6 +2,7 @@ package com.github.rain1208.deadbydaylightje.characters
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.maps.Generator
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -9,7 +10,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 class Killer(override val player: Player): IGamePlayer {
-    val baseBreakAbility = 10.0
+    val baseBreakAbility = 20.0
     var originalBreakAbility = 0.0
 
     var breakCoolDown = false
@@ -25,6 +26,11 @@ class Killer(override val player: Player): IGamePlayer {
         player.inventory.addItem(axe)
 
         player.teleport(spawn)
+        player.gameMode = GameMode.ADVENTURE
+
+        for (effect in player.activePotionEffects) {
+            player.removePotionEffect(effect.type)
+        }
     }
 
     override fun onUse(generator: Generator) {
