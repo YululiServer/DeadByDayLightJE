@@ -48,7 +48,6 @@ class Survivor(override val player: Player): IGamePlayer {
         player.sendTitle("§2修理完了!!",msg,0,30,0)
     }
 
-<<<<<<< HEAD
     fun setFish(hook: Location, jail: Location) {
         isHanged = true
         player.teleport(hook)
@@ -66,16 +65,6 @@ class Survivor(override val player: Player): IGamePlayer {
         hp = 1
         isHanged = false
         tpJail?.cancel()
-        player.teleport(rescuer)
-=======
-    fun setFish(location: Location) {
-        isHanged = true
-        player.teleport(location)
->>>>>>> 5f5e3e193c062e8bf8407b7b8796e400165339fa
-    }
-
-    fun rescue(rescuer: Player) {
-        hp = 1
         player.teleport(rescuer)
     }
 }
