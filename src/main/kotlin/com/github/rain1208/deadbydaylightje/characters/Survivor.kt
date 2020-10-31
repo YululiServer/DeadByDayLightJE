@@ -33,7 +33,6 @@ class Survivor(override val player: Player): IGamePlayer {
 
     fun addDamage() = hp--
 
-
     override fun onUse(generator: Generator) {
         generator.onActivate(baseRepairAbility + originalRepairAbility)
         val n = (generator.occupancyRate / 10).toInt()
