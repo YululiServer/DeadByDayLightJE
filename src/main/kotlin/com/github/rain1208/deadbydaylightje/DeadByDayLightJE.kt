@@ -2,6 +2,7 @@ package com.github.rain1208.deadbydaylightje
 
 import com.github.rain1208.deadbydaylightje.commands.*
 import com.github.rain1208.deadbydaylightje.game.Game
+import com.github.rain1208.deadbydaylightje.utils.SQLite
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -17,6 +18,8 @@ class DeadByDayLightJE : JavaPlugin() {
             "dstop" to StopGame,
             "dstatus" to GameStatus,
             "oni" to SetKiller,
+            "join" to JoinGame,
+            "leave" to LeaveGame,
             "config" to Config
     )
 
@@ -31,6 +34,9 @@ class DeadByDayLightJE : JavaPlugin() {
 
         //コマンドの登録
         registerCommands()
+
+        //ゲームデータを保存するデータベース
+        //SQLite(this)
 
         if (autoStart()) createGame()
     }
