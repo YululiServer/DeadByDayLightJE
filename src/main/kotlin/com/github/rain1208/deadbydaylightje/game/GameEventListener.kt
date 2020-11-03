@@ -51,30 +51,18 @@ class GameEventListener(val game: Game): Listener {
 
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        game.gameTask.timeBar.addPlayer(event.player)
-        game.joinInMid(event.player)
+        game.join(event.player)
     }
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
-        game.gameTask.timeBar.removePlayer(event.player)
-        game.leave(event.player)
+        game.join(event.player)
     }
 
     @EventHandler
     fun onSneak(event: PlayerToggleSneakEvent) {
         if (event.isSneaking) return
         if (!game.isSurvivor(event.player)) return
-
-        val nearPlayer = event.player.getNearbyEntities(1.0,1.0,1.0).filterIsInstance<Player>()
-        for (nplayer in nearPlayer) {
-            val player = game.getPlayer(nplayer)
-            if (player !is Survivor) return
-            if (player.isHanged) {
-                player.rescue(event.player)
-                return
-            }
-        }
     }
 
     @EventHandler
@@ -93,7 +81,7 @@ class GameEventListener(val game: Game): Listener {
             val surv = game.survivor[dmg.name]
             surv?.addDamage()
             if (surv?.hp!! <= 0) {
-                surv.setFish(game.map.getFish(),game.map.getJail())
+                game.setHook(surv)
             } else {
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.GLOWING,10*20,1))
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.SPEED,7*20,2))

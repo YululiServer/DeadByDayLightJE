@@ -8,7 +8,6 @@ import com.github.rain1208.deadbydaylightje.characters.Survivor
 import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Map
 import org.bukkit.Bukkit
-import org.bukkit.GameMode
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
@@ -17,6 +16,9 @@ import org.bukkit.scheduler.BukkitRunnable
 class Game {
     val survivor: MutableMap<String, Survivor> = mutableMapOf()
     val killers: MutableMap<String, Killer> = mutableMapOf()
+
+    val deadSurvivor: MutableMap<String, Survivor> = mutableMapOf()
+    val escapeSurvivor = arrayListOf<Survivor>()
 
     val generators: ArrayList<Generator> = arrayListOf()
     var generatorCount = 0
@@ -28,6 +30,10 @@ class Game {
     var isStarted = false
 
     fun start() {
+        //if (killers.isEmpty()) {
+        //    Bukkit.broadcastMessage("キラーがいないためゲームを開始できません")
+        //    return
+        //}
         map = Map()
 
         for (loc in map.generatorPoint) {
@@ -48,12 +54,17 @@ class Game {
                     for (player in Bukkit.getOnlinePlayers()) {
                         player.sendTitle("スタート!", "", 20, 50, 20)
                     }
+
                     gameTask.runTaskTimer(DeadByDayLightJE.instance,0,20)
                     gameTask.timeBar.createBar()
                     gameTask.timerStart()
+
                     startPlayer()
+
+                    //夜に固定
                     map.world.time = 13800
                     map.world.setGameRuleValue("doDaylightCycle","false")
+
                 } else {
                     Bukkit.broadcastMessage("ゲーム開始まで: $count"+"秒")
                     count--
@@ -91,21 +102,43 @@ class Game {
 
         with(DeadByDayLightJE.instance) {
             game = null
-            logger.info("ゲームを終了しました")
             if (autoStart()) createGame()
         }
     }
 
-    fun join(player: Player) {
-        survivor[player.name] = Survivor(player)
-        Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
+    fun result() {
+
+        stop()
     }
 
-    fun joinInMid(player: Player) {
+    fun setHook(survivor: Survivor) {
+        gameTask.hookedSurvivor[survivor.player.name] = survivor
+        Bukkit.broadcastMessage("${survivor.player.name}がフックにつられました")
+    }
+
+    fun goToJail(surv: Survivor) {
+        survivor.remove(surv.player.name)
+        deadSurvivor[surv.player.name] = surv
+        Bukkit.broadcastMessage(surv.player.name +"が牢屋に送られました")
+    }
+
+    fun respawn(player: Player) {
+        val surv = deadSurvivor[player.name]
+        if (surv is Survivor) survivor[player.name] = surv
+        deadSurvivor.remove(player.name)
+    }
+
+
+    fun join(player: Player) {
         survivor[player.name] = Survivor(player)
-        survivor[player.name]?.initPlayer(map.getJail())
-        Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
-        player.sendMessage("途中参加のため牢屋からスタートしました")
+        if (isStarted) {
+            gameTask.timeBar.addPlayer(player)
+            survivor[player.name]?.initPlayer(map.getJail())
+            Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
+            player.sendMessage("途中参加のため牢屋からスタートしました")
+        } else {
+            Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
+        }
     }
 
     fun leave(player: Player) {
