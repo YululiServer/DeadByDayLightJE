@@ -11,6 +11,10 @@ commands:
     description: ""
   oni:
     description: ""
+  join:
+    description: ""
+  leave:
+    description: ""
   config:
     description: ""
   dstatus:
