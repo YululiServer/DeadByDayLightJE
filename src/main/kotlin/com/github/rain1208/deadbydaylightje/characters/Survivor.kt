@@ -2,6 +2,7 @@ package com.github.rain1208.deadbydaylightje.characters
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.maps.Generator
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
@@ -11,16 +12,21 @@ class Survivor(override val player: Player): IGamePlayer {
     val baseRepairAbility = 1.0
     var originalRepairAbility = 9.0 //TODO("ここの数字はテストのため")
 
-    var isHanged = false
-
     var hp = 2
 
-    var tpJail: BukkitRunnable? = null
+    var hookCount = 0
+    var rescueCount = 0
+
+    var rescueCoolDown = false
 
     override fun initPlayer(spawn: Location) {
         player.health = 20.0
         player.foodLevel = 20
+
         hp = 2
+
+        hookCount = 0
+        rescueCount = 0
 
         player.inventory.clear()
 
@@ -28,6 +34,30 @@ class Survivor(override val player: Player): IGamePlayer {
         player.gameMode = GameMode.ADVENTURE
         for (effect in player.activePotionEffects) {
             player.removePotionEffect(effect.type)
+        }
+    }
+
+    fun rescue(survivor: Survivor) {
+        survivor.initPlayer(player.location)
+        Bukkit.broadcastMessage(survivor.player.name + "がフックから救出された")
+        setRescueCoolDown()
+    }
+
+    private fun setRescueCoolDown() {
+        rescueCoolDown = true
+        object : BukkitRunnable() {
+            override fun run() {
+                rescueCoolDown = false
+            }
+        }.runTaskLater(DeadByDayLightJE.instance,10)
+    }
+
+    fun addHookCount(rescue: Boolean) {
+        if (rescue) {
+            rescueCount++
+        } else {
+            rescueCount = 0
+            hookCount++
         }
     }
 
@@ -45,25 +75,5 @@ class Survivor(override val player: Player): IGamePlayer {
         player.resetTitle()
         val msg = StringBuilder("§2修理率 :"+"■".repeat(10)).toString()
         player.sendTitle("§2修理完了!!",msg,0,30,0)
-    }
-
-    fun setFish(hook: Location, jail: Location) {
-        isHanged = true
-        player.teleport(hook)
-
-        tpJail = object : BukkitRunnable() {
-            override fun run() {
-                player.teleport(jail)
-            }
-        }
-        tpJail?.runTaskLater(DeadByDayLightJE.instance,20*30)
-    }
-
-    fun rescue(rescuer: Player) {
-        if (tpJail?.isCancelled!!) return
-        hp = 1
-        isHanged = false
-        tpJail?.cancel()
-        player.teleport(rescuer)
     }
 }
