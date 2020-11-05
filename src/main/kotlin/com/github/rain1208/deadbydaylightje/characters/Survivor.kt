@@ -9,15 +9,16 @@ import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 
 class Survivor(override val player: Player): IGamePlayer {
-    val baseRepairAbility = 1.0
-    var originalRepairAbility = 9.0 //TODO("ここの数字はテストのため")
+    private val baseRepairAbility = 1.0
+    private var originalRepairAbility = 9.0 //TODO("ここの数字はテストのため")
 
     var hp = 2
 
     var hookCount = 0
     var rescueCount = 0
-
     var rescueCoolDown = false
+
+    var isHooked = false
 
     override fun initPlayer(spawn: Location) {
         player.health = 20.0
@@ -27,6 +28,8 @@ class Survivor(override val player: Player): IGamePlayer {
 
         hookCount = 0
         rescueCount = 0
+
+        isHooked = false
 
         player.inventory.clear()
 

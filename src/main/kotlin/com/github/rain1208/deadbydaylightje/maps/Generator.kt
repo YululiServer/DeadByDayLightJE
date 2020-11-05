@@ -40,6 +40,7 @@ class Generator(val armorStand: ArmorStand) {
             isAlive = false
             armorStand.remove()
             armorStand.health = 0.0
+            armorStand.world.spawnParticle(Particle.FIREWORKS_SPARK,armorStand.location,1)
             Bukkit.broadcastMessage("発電が完了しました")
             return
         }

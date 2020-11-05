@@ -6,6 +6,7 @@ import com.github.rain1208.deadbydaylightje.characters.IGamePlayer
 import com.github.rain1208.deadbydaylightje.characters.Killer
 import com.github.rain1208.deadbydaylightje.characters.Survivor
 import com.github.rain1208.deadbydaylightje.maps.Generator
+import com.github.rain1208.deadbydaylightje.maps.Lever
 import com.github.rain1208.deadbydaylightje.maps.Map
 import org.bukkit.Bukkit
 import org.bukkit.entity.ArmorStand
@@ -23,17 +24,21 @@ class Game {
     val generators: ArrayList<Generator> = arrayListOf()
     var generatorCount = 0
 
+    val levers: ArrayList<Lever> = arrayListOf()
+
     lateinit var map:Map
 
     val gameTask = GameTask(this)
 
     var isStarted = false
 
+    var isRepairAllComplete = false
+
     fun start() {
-        //if (killers.isEmpty()) {
-        //    Bukkit.broadcastMessage("キラーがいないためゲームを開始できません")
-        //    return
-        //}
+        if (killers.isEmpty()) {
+            Bukkit.broadcastMessage("キラーがいないためゲームを開始できません")
+            return
+        }
         map = Map()
 
         for (loc in map.generatorPoint) {
@@ -41,7 +46,12 @@ class Game {
             generatorCount++
         }
 
-        HandlerList.unregisterAll(EventListener())
+        for (lever in map.leverPoint) {
+            levers.add(Lever(lever.world.spawn(lever,ArmorStand::class.java)))
+        }
+
+        HandlerList.unregisterAll(DeadByDayLightJE.instance)
+
         Bukkit.getPluginManager().registerEvents(GameEventListener(this), DeadByDayLightJE.instance)
         Bukkit.broadcastMessage("ゲームを開始します")
 
@@ -55,6 +65,7 @@ class Game {
                         player.sendTitle("スタート!", "", 20, 50, 20)
                     }
 
+                    isStarted = true
                     gameTask.runTaskTimer(DeadByDayLightJE.instance,0,20)
                     gameTask.timeBar.createBar()
                     gameTask.timerStart()
@@ -71,25 +82,21 @@ class Game {
                 }
             }
         }.runTaskTimer(DeadByDayLightJE.instance,0,20)
-        isStarted = true
     }
 
     fun startPlayer() {
         for (survivor in survivor.values) {
             survivor.initPlayer(map.getSpawn())
         }
-
-        object :BukkitRunnable(){
-            override fun run() {
-                println(killers)
-                for (killer in killers.values) {
-                    killer.initPlayer(map.getKillerSpawn())
-                }
-            }
-        }.runTaskLater(DeadByDayLightJE.instance,100)
+        for (killer in killers.values) {
+            killer.initPlayer(map.getKillerSpawn())
+        }
     }
 
     fun stop() {
+        for (player in Bukkit.getOnlinePlayers()) {
+            player.teleport(map.getLobby())
+        }
         if (isStarted) {
             HandlerList.unregisterAll(GameEventListener(this))
             for (generator in generators) {
@@ -107,11 +114,26 @@ class Game {
     }
 
     fun result() {
-
+        Bukkit.broadcastMessage("=".repeat(30))
+        Bukkit.broadcastMessage(" ".repeat(9) + "ゲーム終了")
+        Bukkit.broadcastMessage("=".repeat(30))
+        for (player in Bukkit.getOnlinePlayers()) {
+            if (escapeSurvivor.count() <= 0) {
+                player.sendTitle("ゲーム終了!!!","キラー側の勝利",0,40,0)
+            } else {
+                player.sendTitle("ゲーム終了!!!","サバイバーが逃げ切った",0,40,0)
+                var message = ""
+                for (surv in escapeSurvivor) {
+                    message += surv.player.name+ ", "
+                }
+                Bukkit.broadcastMessage(message)
+            }
+        }
         stop()
     }
 
     fun setHook(survivor: Survivor) {
+        survivor.player.teleport(map.getFish())
         gameTask.hookedSurvivor[survivor.player.name] = survivor
         Bukkit.broadcastMessage("${survivor.player.name}がフックにつられました")
     }
@@ -120,14 +142,26 @@ class Game {
         survivor.remove(surv.player.name)
         deadSurvivor[surv.player.name] = surv
         Bukkit.broadcastMessage(surv.player.name +"が牢屋に送られました")
+        surv.player.teleport(map.getJail())
     }
 
     fun respawn(player: Player) {
-        val surv = deadSurvivor[player.name]
-        if (surv is Survivor) survivor[player.name] = surv
+        if (generatorCount >= 3) {
+            val surv = deadSurvivor[player.name]
+            if (surv is Survivor) {
+                survivor[player.name] = surv
+                surv.initPlayer(map.getSpawn())
+            }
+        } else {
+            setKiller(player)
+        }
         deadSurvivor.remove(player.name)
     }
 
+    fun repairAllComplete() {
+        isRepairAllComplete = true
+        Bukkit.broadcastMessage("発電機の修理がすべて完了しました")
+    }
 
     fun join(player: Player) {
         survivor[player.name] = Survivor(player)

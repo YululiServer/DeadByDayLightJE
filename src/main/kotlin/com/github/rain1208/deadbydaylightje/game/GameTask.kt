@@ -16,10 +16,31 @@ class GameTask(val game: Game): BukkitRunnable() {
 
     override fun run() {
         if (time <= 0) {
-            game.stop()
+            game.result()
         }
+
+        if (game.generatorCount == 0) {
+            if (!game.isRepairAllComplete) {
+                game.repairAllComplete()
+            }
+        }
+
+        if (game.killers.isEmpty()) {
+            game.stop()
+            Bukkit.broadcastMessage("キラーがいなくなったのでゲームを終了します")
+        }
+
+        if (game.survivor.isEmpty()) game.result()
+
         hookPlayerUpdate()
         sendData()
+
+        if (game.isRepairAllComplete) {
+            for (lever in game.levers) {
+                if (lever.isAlive) lever.baseTick()
+            }
+        }
+
         for (generator in game.generators) {
             if (generator.isAlive) generator.baseTick(game)
         }
@@ -34,6 +55,7 @@ class GameTask(val game: Game): BukkitRunnable() {
                 if (hookedSurvivor.contains(player.name) || !game.isSurvivor(player)) continue
                 if (game.survivor[player.name]?.rescueCoolDown!!) continue
                 if (player.isSneaking) {
+                    player.sendTitle("","救助中",0,20,0)
                     surv.addHookCount(true)
                     if (surv.rescueCount >= 3) {
                         game.survivor[player.name]?.rescue(surv)
@@ -51,25 +73,24 @@ class GameTask(val game: Game): BukkitRunnable() {
         }
     }
 
-    fun timerStart() {
-        for (survivor in game.getSurvivors()) {
-            timeBar.addPlayer(survivor.player)
-        }
-        for (killer in game.getKillers()) {
-            timeBar.addPlayer(killer.player)
-        }
-    }
-
     private fun sendData() {
         val title = "残り時間 ${time/60}:${if (time%60 == 0) "00" else time%60} | §c殺人鬼§r ${game.killers.size} | §9生存者§r ${game.survivor.size} |"
         timeBar.setTitle(title)
         timeBar.setProgress(time.toDouble()/900.0)
 
 
-        val message = TextComponent("残り発電機: ${game.generatorCount}")
+        val message = TextComponent("残り発電機: ${game.generatorCount} | スキル: 未実装")
         for (player in Bukkit.getOnlinePlayers()) {
-            message.text += " | スキル: 未実装"
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR,message)
+        }
+    }
+
+    fun timerStart() {
+        for (survivor in game.getSurvivors()) {
+            timeBar.addPlayer(survivor.player)
+        }
+        for (killer in game.getKillers()) {
+            timeBar.addPlayer(killer.player)
         }
     }
 }

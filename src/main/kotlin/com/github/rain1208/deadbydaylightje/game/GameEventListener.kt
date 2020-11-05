@@ -2,18 +2,17 @@ package com.github.rain1208.deadbydaylightje.game
 
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.animation.ThrowAxe
-import com.github.rain1208.deadbydaylightje.characters.Survivor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.player.PlayerToggleSneakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -50,6 +49,14 @@ class GameEventListener(val game: Game): Listener {
     }
 
     @EventHandler
+    fun clickBlock(event: BlockDamageEvent) {
+        if (!game.deadSurvivor.contains(event.player.name)) return
+        if (event.block.location == game.map.respawnBlock) {
+            game.respawn(event.player)
+        }
+    }
+
+    @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
         game.join(event.player)
     }
@@ -57,12 +64,6 @@ class GameEventListener(val game: Game): Listener {
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
         game.join(event.player)
-    }
-
-    @EventHandler
-    fun onSneak(event: PlayerToggleSneakEvent) {
-        if (event.isSneaking) return
-        if (!game.isSurvivor(event.player)) return
     }
 
     @EventHandler
@@ -79,8 +80,10 @@ class GameEventListener(val game: Game): Listener {
 
         if(game.isKiller(atk) && game.isSurvivor(dmg)) {
             val surv = game.survivor[dmg.name]
-            surv?.addDamage()
-            if (surv?.hp!! <= 0) {
+            if (surv?.isHooked!!) return
+            surv.addDamage()
+            if (surv.hp <= 0) {
+                surv.isHooked = true
                 game.setHook(surv)
             } else {
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.GLOWING,10*20,1))
@@ -88,4 +91,6 @@ class GameEventListener(val game: Game): Listener {
             }
         }
     }
+
+
 }

@@ -10,8 +10,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 class Killer(override val player: Player): IGamePlayer {
-    val baseBreakAbility = 20.0
-    var originalBreakAbility = 0.0
+    private val baseBreakAbility = 20.0
+    private var originalBreakAbility = 0.0
 
     var breakCoolDown = false
 
@@ -34,6 +34,7 @@ class Killer(override val player: Player): IGamePlayer {
     }
 
     override fun onUse(generator: Generator) {
+        if (generator.occupancyRate <= 0.0) return
         if (breakCoolDown) return
         generator.onBreak(baseBreakAbility + originalBreakAbility)
         val n = (generator.occupancyRate / 10).toInt()
@@ -42,7 +43,7 @@ class Killer(override val player: Player): IGamePlayer {
         setCoolDown()
     }
 
-    fun setCoolDown() {
+    private fun setCoolDown() {
         breakCoolDown = true
         object : BukkitRunnable() {
             override fun run() {

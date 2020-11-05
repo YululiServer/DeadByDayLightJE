@@ -11,7 +11,6 @@ class EventListener: Listener {
     fun onJoin(event: PlayerJoinEvent) {
         val game = DeadByDayLightJE.instance.game
         game?.join(event.player)
-
         object : BukkitRunnable() {
             override fun run() {
 

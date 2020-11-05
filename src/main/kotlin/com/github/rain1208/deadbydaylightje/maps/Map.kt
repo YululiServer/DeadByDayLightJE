@@ -10,8 +10,11 @@ class Map {
     private val spawnPoint = arrayListOf<Location>()
     private val killerSpawn = arrayListOf<Location>()
     val generatorPoint = arrayListOf<Location>()
-    val jailPoint = arrayListOf<Location>()
-    val fishPoint = arrayListOf<Location>()
+    private val fishPoint = arrayListOf<Location>()
+    private val jailPoint = arrayListOf<Location>()
+    private val lobbyPoint = arrayListOf<Location>()
+    val leverPoint = arrayListOf<Location>()
+    val respawnBlock: Location
 
     var world: World
 
@@ -35,16 +38,24 @@ class Map {
             val pos = fish.split(",").map { it.toDouble() }
             fishPoint.add(Location(world,pos[0],pos[1],pos[2]))
         }
+        for (lever in config.getStringList("world.gateLever")) {
+            val pos = lever.split(",").map { it.toDouble() }
+            leverPoint.add(Location(world,pos[0],pos[1],pos[2]))
+        }
 
         val jail = config.getString("world.jail").split(",").map { it.toDouble() }
         jailPoint.add(Location(world,jail[0],jail[1],jail[2]))
+
+        val lobby = config.getString("world.lobby").split(",").map { it.toDouble() }
+        lobbyPoint.add(Location(world,lobby[0],lobby[1],lobby[2]))
+
+        val respawn = config.getString("world.respawnBlock").split(",").map { it.toDouble() }
+        respawnBlock = Location(world,respawn[0],respawn[1],respawn[2])
     }
 
     fun getSpawn():Location = spawnPoint[Random.nextInt(spawnPoint.size)]
-
     fun getKillerSpawn(): Location = killerSpawn[Random.nextInt(killerSpawn.size)]
-
-    fun getJail(): Location = jailPoint[0]
-
     fun getFish(): Location = fishPoint[Random.nextInt(fishPoint.size)]
+    fun getJail(): Location = jailPoint[0]
+    fun getLobby(): Location = lobbyPoint[0]
 }

@@ -12,6 +12,8 @@ class DeadByDayLightJE : JavaPlugin() {
         private set
     }
 
+    lateinit var dataBase: SQLite
+
     private val commands = mapOf(
             "dstart" to StartGame,
             "d_end" to EndGame,
@@ -35,8 +37,7 @@ class DeadByDayLightJE : JavaPlugin() {
         //コマンドの登録
         registerCommands()
 
-        //ゲームデータを保存するデータベース
-        //SQLite(this)
+        dataBase = SQLite(this)
 
         if (autoStart()) createGame()
     }
@@ -74,6 +75,7 @@ class DeadByDayLightJE : JavaPlugin() {
     }
 
     override fun onDisable() {
+        dataBase.close()
         logger.info("プラグインが無効化されました")
     }
 }
