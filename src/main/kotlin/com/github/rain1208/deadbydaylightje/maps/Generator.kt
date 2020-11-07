@@ -34,13 +34,12 @@ class Generator(val armorStand: ArmorStand) {
             for (player in nearPlayer) {
                 if (game.getSurvivors().contains(player)) {
                     game.survivor[player.name]?.repairComplete()
-                    game.generatorCount--
                 }
             }
             isAlive = false
             armorStand.remove()
-            armorStand.health = 0.0
-            armorStand.world.spawnParticle(Particle.FIREWORKS_SPARK,armorStand.location,1)
+            game.generatorCount--
+            armorStand.world.spawnParticle(Particle.CRIT_MAGIC,armorStand.location,1)
             Bukkit.broadcastMessage("発電が完了しました")
             return
         }
