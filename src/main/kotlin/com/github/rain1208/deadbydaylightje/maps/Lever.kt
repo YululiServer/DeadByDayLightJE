@@ -1,6 +1,6 @@
 package com.github.rain1208.deadbydaylightje.maps
 
-import org.bukkit.Bukkit
+import com.github.rain1208.deadbydaylightje.game.Game
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 
@@ -12,7 +12,7 @@ class Lever(val armorStand: ArmorStand) {
         armorStand.isVisible = false
     }
 
-    fun baseTick() {
+    fun baseTick(game:Game) {
         if (!isAlive) return
 
         val nearPlayer = armorStand.getNearbyEntities(1.5,2.0,1.5).filterIsInstance<Player>()
@@ -22,7 +22,7 @@ class Lever(val armorStand: ArmorStand) {
             }
         }
         if (occupancyRate >= 50) {
-            Bukkit.broadcastMessage("ゲートが通電しました")
+            game.leverActivate()
             armorStand.remove()
             isAlive = false
         }
