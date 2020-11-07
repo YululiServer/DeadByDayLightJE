@@ -37,7 +37,7 @@ class GameTask(val game: Game): BukkitRunnable() {
 
         if (game.isRepairAllComplete) {
             for (lever in game.levers) {
-                if (lever.isAlive) lever.baseTick()
+                if (lever.isAlive) lever.baseTick(game)
             }
         }
 
@@ -50,21 +50,22 @@ class GameTask(val game: Game): BukkitRunnable() {
     fun hookPlayerUpdate() {
         for ((name,surv) in hookedSurvivor) {
             val players = surv.player.getNearbyEntities(1.0,2.0,1.0).filterIsInstance<Player>()
-
+            var flag = false
             for (player in players) {
                 if (hookedSurvivor.contains(player.name) || !game.isSurvivor(player)) continue
                 if (game.survivor[player.name]?.rescueCoolDown!!) continue
                 if (player.isSneaking) {
-                    player.sendTitle("","救助中",0,20,0)
-                    surv.addHookCount(true)
-                    if (surv.rescueCount >= 3) {
+                    player.sendTitle("救助中","" ,0,20,0)
+                    flag = true
+                    if (surv.rescueCount >= 2 && surv.isHooked) {
+                        surv.isHooked = false
+                        hookedSurvivor.remove(name)
                         game.survivor[player.name]?.rescue(surv)
                         break
                     }
                 }
             }
-
-            surv.addHookCount(false)
+            surv.addHookCount(flag)
             if (surv.hookCount >= 30) {
                 hookedSurvivor.remove(name)
                 game.goToJail(surv)
@@ -77,7 +78,6 @@ class GameTask(val game: Game): BukkitRunnable() {
         val title = "残り時間 ${time/60}:${if (time%60 == 0) "00" else time%60} | §c殺人鬼§r ${game.killers.size} | §9生存者§r ${game.survivor.size} |"
         timeBar.setTitle(title)
         timeBar.setProgress(time.toDouble()/900.0)
-
 
         val message = TextComponent("残り発電機: ${game.generatorCount} | スキル: 未実装")
         for (player in Bukkit.getOnlinePlayers()) {
