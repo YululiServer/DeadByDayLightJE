@@ -63,7 +63,7 @@ class GameEventListener(val game: Game): Listener {
 
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
-        game.join(event.player)
+        game.leave(event.player)
     }
 
     @EventHandler
@@ -74,6 +74,10 @@ class GameEventListener(val game: Game): Listener {
         if (dmg !is Player) return
 
         if (game.isSurvivor(dmg) && game.isSurvivor(atk)) {
+            event.isCancelled = true
+            return
+        }
+        if (game.isSurvivor(atk) && game.isKiller(dmg)) {
             event.isCancelled = true
             return
         }
