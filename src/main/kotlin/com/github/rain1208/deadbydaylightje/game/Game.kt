@@ -9,6 +9,8 @@ import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Lever
 import com.github.rain1208.deadbydaylightje.maps.Map
 import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
@@ -98,9 +100,13 @@ class Game {
             player.teleport(map.getLobby())
         }
         if (isStarted) {
-            HandlerList.unregisterAll(GameEventListener(this))
+            HandlerList.unregisterAll(DeadByDayLightJE.instance)
+            DeadByDayLightJE.instance.server.pluginManager.registerEvents(EventListener(),DeadByDayLightJE.instance)
             for (generator in generators) {
                 generator.armorStand.remove()
+            }
+            for (lever in levers) {
+                lever.armorStand.remove()
             }
             removeTimer()
             gameTask.cancel()
@@ -130,6 +136,11 @@ class Game {
             }
         }
         stop()
+    }
+
+    fun leverActivate() {
+        Bukkit.broadcastMessage("ゲートが開きました")
+        Location(map.world,-10.0,12.0,-62.0).block.type = Material.REDSTONE_BLOCK
     }
 
     fun setHook(survivor: Survivor) {
@@ -164,14 +175,15 @@ class Game {
     }
 
     fun join(player: Player) {
-        survivor[player.name] = Survivor(player)
         if (isStarted) {
             gameTask.timeBar.addPlayer(player)
-            survivor[player.name]?.initPlayer(map.getJail())
+            deadSurvivor[player.name] = Survivor(player)
+            deadSurvivor[player.name]?.initPlayer(map.getJail())
             Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
             player.sendMessage("途中参加のため牢屋からスタートしました")
         } else {
             Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
+            survivor[player.name] = Survivor(player)
         }
     }
 
