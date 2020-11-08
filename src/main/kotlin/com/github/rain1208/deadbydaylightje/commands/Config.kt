@@ -11,7 +11,7 @@ import org.bukkit.util.StringUtil
 object Config: CommandExecutor, TabExecutor {
     val commands = arrayListOf(
             "jail", "oni", "hacci", "itembox",
-            "seizon", "generator", "fish"
+            "seizon", "generator", "fish", "respawnBlock"
     )
 
     override fun onTabComplete(sender: CommandSender?, command: Command?, alias: String?, args: Array<out String>?): MutableList<String> {
@@ -27,7 +27,14 @@ object Config: CommandExecutor, TabExecutor {
         if (sender !is Player) return true
 
         if (args[0].isNotEmpty() && commands.contains(args[0])) {
-
+            val config = DeadByDayLightJE.instance.configManager
+            val pos = sender.location
+            val text = "${pos.blockX},${pos.blockY},${pos.blockZ}"
+            when (args[0]) {
+                "jail","lobby","respawnBlock" -> config.set(args[0],text)
+                else -> config.add(args[0],text)
+            }
+            sender.sendMessage(text+"を"+args[0]+"に設定しました")
         }
         return true
     }
