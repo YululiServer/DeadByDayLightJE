@@ -2,15 +2,20 @@ package com.github.rain1208.deadbydaylightje
 
 import com.github.rain1208.deadbydaylightje.commands.*
 import com.github.rain1208.deadbydaylightje.game.Game
+import com.github.rain1208.deadbydaylightje.utils.ConfigManager
 import com.github.rain1208.deadbydaylightje.utils.SQLite
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.scoreboard.DisplaySlot
 
 class DeadByDayLightJE : JavaPlugin() {
     companion object {
         lateinit var instance: DeadByDayLightJE
         private set
     }
+
+    lateinit var configManager: ConfigManager
 
     lateinit var dataBase: SQLite
 
@@ -33,6 +38,7 @@ class DeadByDayLightJE : JavaPlugin() {
 
         //Configの追加
         saveDefaultConfig()
+        configManager = ConfigManager(config)
 
         //コマンドの登録
         registerCommands()
