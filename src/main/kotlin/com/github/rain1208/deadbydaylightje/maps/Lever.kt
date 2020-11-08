@@ -14,13 +14,14 @@ class Lever(val armorStand: ArmorStand) {
 
     fun baseTick(game:Game) {
         if (!isAlive) return
-
         val nearPlayer = armorStand.getNearbyEntities(1.5,2.0,1.5).filterIsInstance<Player>()
         for (entity in nearPlayer) {
             if (entity.isSneaking) {
                 occupancyRate++
+                break
             }
         }
+
         if (occupancyRate >= 50) {
             game.leverActivate()
             armorStand.remove()
