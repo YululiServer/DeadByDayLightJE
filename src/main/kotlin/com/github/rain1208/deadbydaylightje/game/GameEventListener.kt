@@ -68,6 +68,7 @@ class GameEventListener(val game: Game): Listener {
 
     @EventHandler
     fun damageByEntity(event: EntityDamageByEntityEvent) {
+        event.damage = 0.0
         val atk = event.damager
         val dmg = event.entity
         if (atk !is Player) return
