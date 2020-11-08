@@ -9,6 +9,7 @@ import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Lever
 import com.github.rain1208.deadbydaylightje.maps.Map
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.ArmorStand
@@ -98,6 +99,7 @@ class Game {
     fun stop() {
         for (player in Bukkit.getOnlinePlayers()) {
             player.teleport(map.getLobby())
+            player.playerListName = player.name
         }
         if (isStarted) {
             HandlerList.unregisterAll(DeadByDayLightJE.instance)
@@ -120,14 +122,14 @@ class Game {
     }
 
     fun result() {
-        Bukkit.broadcastMessage("=".repeat(30))
-        Bukkit.broadcastMessage(" ".repeat(9) + "ゲーム終了")
-        Bukkit.broadcastMessage("=".repeat(30))
+        Bukkit.broadcastMessage(ChatColor.RED.toString() + "=".repeat(30) + ChatColor.RESET.toString())
+        Bukkit.broadcastMessage(ChatColor.RED.toString() + " ".repeat(9) + "ゲーム終了" + ChatColor.RESET.toString())
+        Bukkit.broadcastMessage(ChatColor.RED.toString() + "=".repeat(30) + ChatColor.RESET.toString())
         for (player in Bukkit.getOnlinePlayers()) {
             if (escapeSurvivor.count() <= 0) {
-                player.sendTitle("ゲーム終了!!!","キラー側の勝利",0,40,0)
+                player.sendTitle("ゲーム終了!!!", ChatColor.RED.toString() + "キラー側の勝利",0,40,0)
             } else {
-                player.sendTitle("ゲーム終了!!!","サバイバーが逃げ切った",0,40,0)
+                player.sendTitle("ゲーム終了!!!", ChatColor.GREEN.toString() + "サバイバーが逃げ切った",0,40,0)
                 var message = ""
                 for (surv in escapeSurvivor) {
                     message += surv.player.name+ ", "
@@ -150,6 +152,7 @@ class Game {
     }
 
     fun goToJail(surv: Survivor) {
+        surv.player.playerListName = "牢屋 "+surv.player.name
         survivor.remove(surv.player.name)
         deadSurvivor[surv.player.name] = surv
         Bukkit.broadcastMessage(surv.player.name +"が牢屋に送られました")
@@ -162,16 +165,20 @@ class Game {
             if (surv is Survivor) {
                 survivor[player.name] = surv
                 surv.initPlayer(map.getSpawn())
+                player.playerListName = "[${ChatColor.BLUE}生存者${ChatColor.RESET}] ${player.name}"
             }
         } else {
             setKiller(player)
         }
         deadSurvivor.remove(player.name)
+        Bukkit.broadcastMessage(player.name+"が牢屋から復帰しました")
     }
 
     fun repairAllComplete() {
         isRepairAllComplete = true
-        Bukkit.broadcastMessage("発電機の修理がすべて完了しました")
+        for (player in Bukkit.getOnlinePlayers()) {
+            player.sendTitle(ChatColor.GREEN.toString() + "すべての発電機の修理が完了しました", "",0,20,0)
+        }
     }
 
     fun join(player: Player) {
@@ -179,11 +186,13 @@ class Game {
             gameTask.timeBar.addPlayer(player)
             deadSurvivor[player.name] = Survivor(player)
             deadSurvivor[player.name]?.initPlayer(map.getJail())
+            player.playerListName = "牢屋 "+ player.name
             Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
             player.sendMessage("途中参加のため牢屋からスタートしました")
         } else {
             Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
             survivor[player.name] = Survivor(player)
+            player.playerListName = "[${ChatColor.BLUE}生存者${ChatColor.RESET}] ${player.name}"
         }
     }
 
@@ -196,6 +205,7 @@ class Game {
             killers.remove(player.name)
             Bukkit.broadcastMessage("キラー: ${player.name} さんがゲームから退出しました")
         }
+        player.playerListName = player.name
     }
 
     fun getPlayer(player: Player): IGamePlayer? {
@@ -221,9 +231,11 @@ class Game {
     }
 
     fun setKiller(player: Player) {
+        player.addScoreboardTag("killer")
         if (survivor.contains(player.name)) leave(player)
         killers[player.name] = Killer(player)
         Bukkit.broadcastMessage("${player.name} さんがキラーになりました")
+        player.playerListName = "[${ChatColor.RED}殺人鬼${ChatColor.RESET}] ${player.name}"
     }
 
     fun isKiller(player: Player): Boolean = getKillers().contains(player)
