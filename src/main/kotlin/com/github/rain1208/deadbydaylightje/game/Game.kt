@@ -205,7 +205,7 @@ class Game {
             killers.remove(player.name)
             Bukkit.broadcastMessage("キラー: ${player.name} さんがゲームから退出しました")
         }
-        player.playerListName = player.name
+        player.playerListName = "[${ChatColor.GOLD}運営${ChatColor.RESET}] "+player.name
     }
 
     fun getPlayer(player: Player): IGamePlayer? {
