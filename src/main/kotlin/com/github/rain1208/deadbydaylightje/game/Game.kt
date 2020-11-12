@@ -8,6 +8,7 @@ import com.github.rain1208.deadbydaylightje.characters.Survivor
 import com.github.rain1208.deadbydaylightje.maps.Generator
 import com.github.rain1208.deadbydaylightje.maps.Lever
 import com.github.rain1208.deadbydaylightje.maps.Map
+import com.github.rain1208.deadbydaylightje.utils.KillLog
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -154,6 +155,24 @@ class Game {
         gameTask.hookedSurvivor[survivor.player.name] = survivor
 
         footPointParticle.removePlayer(survivor.player)
+    }
+
+    fun killLog(survivor: Player, killer: Player) =
+        killLog(survivor.name,killer.name)
+
+    fun killLog(survivor: String, killer: String) =
+            killLog(survivor + "killed by" + killer)
+
+
+    fun killLog(title: String) {
+        val log = KillLog()
+        log.setTitle(" ".repeat(40)+title)
+        log.show()
+        object : BukkitRunnable() {
+            override fun run() {
+                log.remove()
+            }
+        }.runTaskLater(DeadByDayLightJE.instance,100)
     }
 
     fun goToJail(surv: Survivor) {
