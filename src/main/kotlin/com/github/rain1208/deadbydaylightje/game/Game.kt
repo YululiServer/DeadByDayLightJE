@@ -32,6 +32,7 @@ class Game {
     lateinit var map:Map
 
     val gameTask = GameTask(this)
+    val footPointParticle = FootPointParticles(this)
 
     var isStarted = false
 
@@ -73,6 +74,8 @@ class Game {
                     gameTask.timeBar.createBar()
                     gameTask.timerStart()
 
+                    footPointParticle.runTaskTimerAsynchronously(DeadByDayLightJE.instance,0,10)
+
                     startPlayer()
 
                     //夜に固定
@@ -104,6 +107,7 @@ class Game {
         if (isStarted) {
             HandlerList.unregisterAll(DeadByDayLightJE.instance)
             DeadByDayLightJE.instance.server.pluginManager.registerEvents(EventListener(),DeadByDayLightJE.instance)
+            footPointParticle.cancel()
             for (generator in generators) {
                 generator.armorStand.remove()
             }
@@ -148,7 +152,8 @@ class Game {
     fun setHook(survivor: Survivor) {
         survivor.player.teleport(map.getFish())
         gameTask.hookedSurvivor[survivor.player.name] = survivor
-        Bukkit.broadcastMessage("${survivor.player.name}がフックにつられました")
+
+        footPointParticle.removePlayer(survivor.player)
     }
 
     fun goToJail(surv: Survivor) {
@@ -193,6 +198,8 @@ class Game {
             Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
             survivor[player.name] = Survivor(player)
             player.playerListName = "[${ChatColor.BLUE}生存者${ChatColor.RESET}] ${player.name}"
+
+            footPointParticle.addPlayer(player)
         }
     }
 
@@ -200,6 +207,7 @@ class Game {
         if (survivor.contains(player.name)) {
             survivor.remove(player.name)
             Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームから退出しました")
+            footPointParticle.removePlayer(player)
         }
         if (killers.contains(player.name)) {
             killers.remove(player.name)
