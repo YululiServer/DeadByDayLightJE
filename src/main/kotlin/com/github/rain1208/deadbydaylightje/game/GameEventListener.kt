@@ -10,9 +10,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.player.PlayerDropItemEvent
-import org.bukkit.event.player.PlayerJoinEvent
-import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
@@ -90,12 +88,11 @@ class GameEventListener(val game: Game): Listener {
             if (surv.hp <= 0) {
                 surv.isHooked = true
                 game.setHook(surv)
+                game.killLog(dmg, atk)
             } else {
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.GLOWING,10*20,1))
                 dmg.addPotionEffect(PotionEffect(PotionEffectType.SPEED,7*20,2))
             }
         }
     }
-
-
 }

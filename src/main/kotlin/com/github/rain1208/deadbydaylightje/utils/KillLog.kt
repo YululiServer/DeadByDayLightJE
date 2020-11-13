@@ -6,7 +6,7 @@ import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
 
 class KillLog {
-    val bar: BossBar = Bukkit.createBossBar("",BarColor.RED,BarStyle.SOLID)
+    val bar: BossBar = Bukkit.createBossBar("",BarColor.WHITE,BarStyle.SOLID)
 
     fun setTitle(string: String) {
         bar.title = string

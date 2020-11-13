@@ -161,12 +161,12 @@ class Game {
         killLog(survivor.name,killer.name)
 
     fun killLog(survivor: String, killer: String) =
-            killLog(survivor + "killed by" + killer)
+            killLog( "${ChatColor.GREEN} $survivor${ChatColor.RESET} killed by ${ChatColor.RED}$killer")
 
 
     fun killLog(title: String) {
         val log = KillLog()
-        log.setTitle(" ".repeat(40)+title)
+        log.setTitle(" ".repeat(70)+title)
         log.show()
         object : BukkitRunnable() {
             override fun run() {
