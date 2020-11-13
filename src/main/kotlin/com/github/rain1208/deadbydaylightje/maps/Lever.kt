@@ -5,7 +5,7 @@ import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 
 class Lever(val armorStand: ArmorStand) {
-    var occupancyRate:Double = 0.0
+    private var occupancyRate:Double = 0.0
     var isAlive = true
 
     init {
@@ -17,7 +17,10 @@ class Lever(val armorStand: ArmorStand) {
         val nearPlayer = armorStand.getNearbyEntities(1.5,2.0,1.5).filterIsInstance<Player>()
         for (entity in nearPlayer) {
             if (entity.isSneaking) {
-                occupancyRate++
+                val n = (occupancyRate / 10).toInt()
+                val msg = StringBuilder("修理率 :"+"■".repeat(n)+"□".repeat(5 - n)).toString()
+                entity.sendTitle("",msg,0,20,0)
+                occupancyRate += 5 //TODO("修理 カウント")
                 break
             }
         }

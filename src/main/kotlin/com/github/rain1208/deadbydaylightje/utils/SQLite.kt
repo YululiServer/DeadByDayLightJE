@@ -3,10 +3,7 @@ package com.github.rain1208.deadbydaylightje.utils
 import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import java.io.File
 import java.lang.RuntimeException
-import java.sql.Connection
-import java.sql.DriverManager
-import java.sql.SQLException
-import java.sql.Statement
+import java.sql.*
 
 class SQLite(val plugin: DeadByDayLightJE) {
     private val file = File(plugin.dataFolder.absolutePath + File.separator + "GameData.db")
@@ -34,7 +31,20 @@ class SQLite(val plugin: DeadByDayLightJE) {
             return connect(recursions+1)
         }
         plugin.logger.info("データベースを読み込みました")
-        statement.execute("create table if not exists PlayerData(name Text not null primary key, survivor_count Integer, killer_count Integer, survivor_win Integer, killer_win Integer)")
+        statement.execute(
+                "CREATE TABLE if not exists PlayerData(name Text not null primary key,"+
+                " survivor_count Integer, killer_count Integer, survivor_win Integer, killer_win Integer)"
+        )
+    }
+
+    fun dataExists(name: String): Boolean {
+        val rs = statement.executeQuery("SELECT * FROM PlayerData WHERE name LIKE $name")
+        println(rs)
+        return true
+    }
+
+    fun addPlayer(name: String) {
+        statement.execute("INSERT INTO PlayerData(name, survivor_count, killer_count, survivor_win, killer_win) values ($name, 0, 0, 0,0)")
     }
 
     fun close() {

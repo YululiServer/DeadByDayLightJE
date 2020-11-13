@@ -25,10 +25,10 @@ class GameTask(val game: Game): BukkitRunnable() {
             }
         }
 
-        if (game.killers.isEmpty()) {
-            game.stop()
-            Bukkit.broadcastMessage("キラーがいなくなったのでゲームを終了します")
-        }
+        //if (game.killers.isEmpty()) {
+        //    game.stop()
+        //    Bukkit.broadcastMessage("キラーがいなくなったのでゲームを終了します")
+        //}
 
         if (game.survivor.isEmpty()) game.result()
 
@@ -75,7 +75,8 @@ class GameTask(val game: Game): BukkitRunnable() {
     }
 
     private fun sendData() {
-        val title = "残り時間 ${time/60}:${if (time%60 == 0) "00" else time%60} | §c殺人鬼§r ${game.killers.size} | §9生存者§r ${game.survivor.size} |"
+        //val title = "残り時間 ${time/60}:${if (time%60 == 0) "00" else time%60} | §c殺人鬼§r ${game.killers.size} | §9生存者§r ${game.survivor.size} |"
+        val title = "§9生存者§r ${game.survivor.size} | 残り時間 ${time/60}:${if (time%60 == 0) "00" else time%60} | §c殺人鬼§r ${game.killers.size}"
         timeBar.setTitle(title)
         timeBar.setProgress(time.toDouble()/900.0)
 

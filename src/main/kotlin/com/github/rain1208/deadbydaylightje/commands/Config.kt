@@ -10,7 +10,7 @@ import org.bukkit.util.StringUtil
 
 object Config: CommandExecutor, TabExecutor {
     val commands = arrayListOf(
-            "jail", "oni", "hacci", "itembox",
+            "jail", "oni", "hacci", "itembox", "lobby",
             "seizon", "generator", "fish", "respawnBlock"
     )
 
