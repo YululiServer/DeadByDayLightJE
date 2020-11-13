@@ -10,16 +10,18 @@ class FootPointParticles(val game: Game): BukkitRunnable() {
     private val pointList = mutableMapOf<Player,Queue<Location>>()
     override fun run() {
         update()
-        for ((player, locations) in pointList) {
+        for ((_, locations) in pointList) {
             for (pos in locations) {
-                player.spawnParticle(Particle.REDSTONE,pos,10,0.3,0.0,0.3)
+                for (killer in game.getKillers()) {
+                    killer.spawnParticle(Particle.DRIP_LAVA,pos,10,0.3,0.2,0.3)
+                }
             }
         }
     }
 
     fun update() {
         for ((player,locations) in pointList) {
-            if (locations.size > 30) {
+            if (locations.size > 50) {
                 locations.poll()
             }
             locations.add(player.location)

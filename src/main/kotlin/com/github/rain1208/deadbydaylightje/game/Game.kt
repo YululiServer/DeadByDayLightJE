@@ -75,7 +75,7 @@ class Game {
                     gameTask.timeBar.createBar()
                     gameTask.timerStart()
 
-                    footPointParticle.runTaskTimerAsynchronously(DeadByDayLightJE.instance,0,10)
+                    footPointParticle.runTaskTimerAsynchronously(DeadByDayLightJE.instance,0,5)
 
                     startPlayer()
 
