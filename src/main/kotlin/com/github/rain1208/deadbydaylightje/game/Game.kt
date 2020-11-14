@@ -30,7 +30,7 @@ class Game {
 
     val levers: ArrayList<Lever> = arrayListOf()
 
-    lateinit var map:Map
+    var map:Map = Map()
 
     val gameTask = GameTask(this)
     val footPointParticle = FootPointParticles(this)
@@ -40,11 +40,10 @@ class Game {
     var isRepairAllComplete = false
 
     fun start() {
-        if (killers.isEmpty()) {
-            Bukkit.broadcastMessage("キラーがいないためゲームを開始できません")
-            return
-        }
-        map = Map()
+        //if (killers.isEmpty()) {
+        //    Bukkit.broadcastMessage("キラーがいないためゲームを開始できません")
+        //    return
+        //}
 
         for (loc in map.generatorPoint) {
             generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
@@ -53,6 +52,10 @@ class Game {
 
         for (lever in map.leverPoint) {
             levers.add(Lever(lever.world.spawn(lever,ArmorStand::class.java)))
+        }
+
+        for (gate in map.gateOpen) {
+            gate.block.type = Material.AIR
         }
 
         HandlerList.unregisterAll(DeadByDayLightJE.instance)
@@ -145,9 +148,9 @@ class Game {
         stop()
     }
 
-    fun leverActivate() {
+    fun leverActivate(pos: Location) {
         Bukkit.broadcastMessage("ゲートが開きました")
-        Location(map.world,-10.0,12.0,-62.0).block.type = Material.REDSTONE_BLOCK
+        map.getGate(pos).block.type = Material.REDSTONE_BLOCK
     }
 
     fun setHook(survivor: Survivor) {
@@ -201,7 +204,7 @@ class Game {
     fun repairAllComplete() {
         isRepairAllComplete = true
         for (player in Bukkit.getOnlinePlayers()) {
-            player.sendTitle(ChatColor.GREEN.toString() + "すべての発電機の修理が完了しました", "",0,20,0)
+            player.sendTitle("", ChatColor.GREEN.toString() + "すべての発電機の修理が完了しました",0,20,0)
         }
     }
 
