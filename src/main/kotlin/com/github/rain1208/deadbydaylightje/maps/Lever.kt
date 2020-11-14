@@ -20,13 +20,13 @@ class Lever(val armorStand: ArmorStand) {
                 val n = (occupancyRate / 10).toInt()
                 val msg = StringBuilder("修理率 :"+"■".repeat(n)+"□".repeat(5 - n)).toString()
                 entity.sendTitle("",msg,0,20,0)
-                occupancyRate += 5 //TODO("修理 カウント")
+                occupancyRate += 10 //TODO("修理 カウント")
                 break
             }
         }
 
-        if (occupancyRate >= 50) {
-            game.leverActivate()
+        if (occupancyRate > 50) {
+            game.leverActivate(armorStand.location)
             armorStand.remove()
             isAlive = false
         }

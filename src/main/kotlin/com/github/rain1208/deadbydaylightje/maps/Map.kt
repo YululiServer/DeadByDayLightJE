@@ -14,6 +14,7 @@ class Map {
     private val jailPoint = arrayListOf<Location>()
     private val lobbyPoint = arrayListOf<Location>()
     val leverPoint = arrayListOf<Location>()
+    val gateOpen = arrayListOf<Location>()
     val respawnBlock: Location
 
     var world: World
@@ -42,6 +43,10 @@ class Map {
             val pos = lever.split(",").map { it.toDouble() }
             leverPoint.add(Location(world,pos[0],pos[1],pos[2]))
         }
+        for (gate in config.getStringList("world.gateOpen")) {
+            val pos = gate.split(",").map { it.toDouble() }
+            gateOpen.add(Location(world,pos[0],pos[1],pos[2]))
+        }
 
         val jail = config.getString("world.jail").split(",").map { it.toDouble() }
         jailPoint.add(Location(world,jail[0],jail[1],jail[2]))
@@ -58,4 +63,6 @@ class Map {
     fun getFish(): Location = fishPoint[Random.nextInt(fishPoint.size)]
     fun getJail(): Location = jailPoint[0]
     fun getLobby(): Location = lobbyPoint[0]
+
+    fun getGate(pos: Location): Location = gateOpen[leverPoint.indexOf(pos)]
 }

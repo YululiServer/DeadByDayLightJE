@@ -32,6 +32,8 @@ class GameTask(val game: Game): BukkitRunnable() {
 
         if (game.survivor.isEmpty()) game.result()
 
+        if (game.survivor.size == 1)
+
         hookPlayerUpdate()
         sendData()
 
