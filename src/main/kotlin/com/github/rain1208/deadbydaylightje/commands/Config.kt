@@ -10,8 +10,9 @@ import org.bukkit.util.StringUtil
 
 object Config: CommandExecutor, TabExecutor {
     val commands = arrayListOf(
-            "jail", "oni", "hacci", "itembox", "lobby",
-            "seizon", "generator", "fish", "respawnBlock"
+            "jail", "oni", "hatch", "itembox", "lobby",
+            "seizon", "generator", "fish", "respawnBlock",
+            "gateOpen"
     )
 
     override fun onTabComplete(sender: CommandSender?, command: Command?, alias: String?, args: Array<out String>?): MutableList<String> {
