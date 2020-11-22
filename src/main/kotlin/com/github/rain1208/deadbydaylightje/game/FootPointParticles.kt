@@ -14,7 +14,7 @@ class FootPointParticles(val game: Game): BukkitRunnable() {
             for (pos in locations) {
                 for (killer in game.getKillers()) {
                     if (pos.distance(killer.location) <= 30) {
-                        killer.spawnParticle(Particle.DRIP_LAVA,pos,10,0.3,0.2,0.3)
+                        killer.spawnParticle(Particle.DRIP_LAVA,pos,2,0.3,0.2,0.3)
                     }
                 }
             }
