@@ -25,14 +25,12 @@ class GameTask(val game: Game): BukkitRunnable() {
             }
         }
 
-        //if (game.killers.isEmpty()) {
-        //    game.stop()
-        //    Bukkit.broadcastMessage("キラーがいなくなったのでゲームを終了します")
-        //}
+        if (game.killers.isEmpty()) {
+            game.stop()
+            Bukkit.broadcastMessage("キラーがいなくなったのでゲームを終了します")
+        }
 
         if (game.survivor.isEmpty()) game.result()
-
-        if (game.survivor.size == 1)
 
         hookPlayerUpdate()
         sendData()
