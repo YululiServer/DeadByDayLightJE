@@ -154,7 +154,7 @@ class Game {
                 lever.armorStand.remove()
             }
             removeTimer()
-            gameTask.cancel()
+            if (!gameTask.isCancelled) gameTask.cancel()
             isStarted = false
         }
 
@@ -246,6 +246,16 @@ class Game {
         isRepairAllComplete = true
         for (player in Bukkit.getOnlinePlayers()) {
             player.sendTitle("", ChatColor.GREEN.toString() + "すべての発電機の修理が完了しました",0,20,0)
+        }
+    }
+
+    fun escapee(player: Player) {
+        val surv = survivor[player.name]
+        survivor.remove(player.name)
+        if (surv is Survivor) {
+            escapeSurvivor.add(surv)
+            Bukkit.broadcastMessage("${player.name} が脱出しました")
+            footPointParticle.removePlayer(player)
         }
     }
 

@@ -16,6 +16,7 @@ class GameTask(val game: Game): BukkitRunnable() {
 
     override fun run() {
         if (time <= 0) {
+            cancel()
             game.result()
         }
 
@@ -30,7 +31,10 @@ class GameTask(val game: Game): BukkitRunnable() {
             Bukkit.broadcastMessage("キラーがいなくなったのでゲームを終了します")
         }
 
-        if (game.survivor.isEmpty()) game.result()
+        if (game.survivor.isEmpty()) {
+            cancel()
+            game.result()
+        }
 
         hookPlayerUpdate()
         sendData()
