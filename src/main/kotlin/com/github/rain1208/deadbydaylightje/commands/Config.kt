@@ -25,6 +25,7 @@ object Config: CommandExecutor, TabExecutor {
 
     override fun onCommand(sender: CommandSender?, command: Command?, label: String?, args: Array<out String>?): Boolean {
         if (args == null) return true
+        if (args.isEmpty()) return true
         if (sender !is Player) return true
 
         if (args[0].isNotEmpty() && commands.contains(args[0])) {
@@ -39,5 +40,4 @@ object Config: CommandExecutor, TabExecutor {
         }
         return true
     }
-
 }

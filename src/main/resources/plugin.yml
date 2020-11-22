@@ -3,6 +3,10 @@ version: @version@
 main: com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 api-version: 1.12
 commands:
+  gamebook:
+    description: ""
+  dcreate:
+    description: ""
   dstart:
     description: ""
   d_end:

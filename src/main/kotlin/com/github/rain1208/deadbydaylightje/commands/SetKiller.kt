@@ -26,7 +26,8 @@ object SetKiller: CommandExecutor {
                 return true
             }
 
-            DeadByDayLightJE.instance.game?.setKiller(Bukkit.getPlayer(args[0]))
+            val player = Bukkit.getPlayer(args[0])
+            if (player is Player) DeadByDayLightJE.instance.game?.setKiller(player)
         } else {
             var count = 0
             val message = TextComponent("===============鬼の決定===============\n")
@@ -52,4 +53,3 @@ object SetKiller: CommandExecutor {
         return true
     }
 }
-
