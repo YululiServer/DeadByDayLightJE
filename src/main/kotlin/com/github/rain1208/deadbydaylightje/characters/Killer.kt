@@ -4,9 +4,7 @@ import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.maps.Generator
 import org.bukkit.GameMode
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 class Killer(override val player: Player): IGamePlayer {
@@ -20,10 +18,6 @@ class Killer(override val player: Player): IGamePlayer {
         player.foodLevel = 20
 
         player.inventory.clear()
-
-        val axe = ItemStack(Material.IRON_AXE)
-        axe.amount = 10
-        player.inventory.addItem(axe)
 
         player.teleport(spawn)
         player.gameMode = GameMode.ADVENTURE

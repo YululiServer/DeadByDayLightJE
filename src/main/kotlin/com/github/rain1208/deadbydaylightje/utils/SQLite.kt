@@ -5,7 +5,7 @@ import java.io.File
 import java.lang.RuntimeException
 import java.sql.*
 
-class SQLite(val plugin: DeadByDayLightJE) {
+class SQLite(private val plugin: DeadByDayLightJE) {
     private val file = File(plugin.dataFolder.absolutePath + File.separator + "GameData.db")
 
     lateinit var connection:Connection
@@ -33,14 +33,13 @@ class SQLite(val plugin: DeadByDayLightJE) {
         plugin.logger.info("データベースを読み込みました")
         statement.execute(
                 "CREATE TABLE if not exists PlayerData(name Text not null primary key,"+
-                " survivor_count Integer, killer_count Integer, survivor_win Integer, killer_win Integer)"
+                     " survivor_count Integer, killer_count Integer, survivor_win Integer, killer_win Integer)"
         )
     }
 
     fun dataExists(name: String): Boolean {
         val rs = statement.executeQuery("SELECT * FROM PlayerData WHERE name LIKE $name")
-        println(rs)
-        return true
+        return rs.next()
     }
 
     fun addPlayer(name: String) {

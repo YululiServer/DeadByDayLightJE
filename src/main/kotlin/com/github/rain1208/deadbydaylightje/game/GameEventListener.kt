@@ -10,13 +10,22 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
-import org.bukkit.event.player.*
+import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
 
 class GameEventListener(val game: Game): Listener {
+
+    @EventHandler
+    fun onJoin(event: PlayerJoinEvent) = game.join(event.player)
+
+    @EventHandler
+    fun onLeave(event: PlayerQuitEvent) = game.leave(event.player)
+
     @EventHandler
     fun onDropItem(event: PlayerDropItemEvent) {
         if (event.itemDrop.itemStack.type == Material.IRON_AXE) {
@@ -52,16 +61,6 @@ class GameEventListener(val game: Game): Listener {
         if (event.block.location == game.map.respawnBlock) {
             game.respawn(event.player)
         }
-    }
-
-    @EventHandler
-    fun onJoin(event: PlayerJoinEvent) {
-        game.join(event.player)
-    }
-
-    @EventHandler
-    fun onLeave(event: PlayerQuitEvent) {
-        game.leave(event.player)
     }
 
     @EventHandler

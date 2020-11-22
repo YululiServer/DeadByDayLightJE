@@ -6,6 +6,7 @@ import com.github.rain1208.deadbydaylightje.utils.ConfigManager
 import com.github.rain1208.deadbydaylightje.utils.SQLite
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.command.CommandMap
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scoreboard.DisplaySlot
 
@@ -20,6 +21,8 @@ class DeadByDayLightJE : JavaPlugin() {
     lateinit var dataBase: SQLite
 
     private val commands = mapOf(
+            "gamebook" to GameBook,
+            "dcreate" to CreateGame,
             "dstart" to StartGame,
             "d_end" to EndGame,
             "dstop" to StopGame,

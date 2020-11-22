@@ -13,9 +13,11 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.block.Chest
 import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
+import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 
 class Game {
@@ -45,24 +47,42 @@ class Game {
         //    return
         //}
 
+        map = Map()
+
+        //発電機の召喚
         for (loc in map.generatorPoint) {
             generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
             generatorCount++
         }
 
+        //レバーの召喚
         for (lever in map.leverPoint) {
             levers.add(Lever(lever.world.spawn(lever,ArmorStand::class.java)))
         }
 
+        //ゲートの初期化
         for (gate in map.gateOpen) {
             gate.block.type = Material.AIR
         }
 
+        //アイテムboxをなくす
+        for (box in map.itembox) {
+            box.block.type = Material.AIR
+        }
+
+        //アイテムboxを作成
+        val box = map.getItemBox().block
+        box.type = Material.CHEST
+        if (box is Chest) {
+            box.inventory.setItem(13, ItemStack(Material.BONE))
+        }
+        
         HandlerList.unregisterAll(DeadByDayLightJE.instance)
 
         Bukkit.getPluginManager().registerEvents(GameEventListener(this), DeadByDayLightJE.instance)
         Bukkit.broadcastMessage("ゲームを開始します")
 
+        isStarted = true
         var count = 10
 
         object : BukkitRunnable() {
@@ -73,7 +93,6 @@ class Game {
                         player.sendTitle("スタート!", "", 20, 50, 20)
                     }
 
-                    isStarted = true
                     gameTask.runTaskTimer(DeadByDayLightJE.instance,0,20)
                     gameTask.timeBar.createBar()
                     gameTask.timerStart()
@@ -85,7 +104,7 @@ class Game {
                     //夜に固定
                     map.world.time = 13800
                     map.world.setGameRuleValue("doDaylightCycle","false")
-
+                    map.world.setGameRuleValue("doWeatherCycle", "false")
                 } else {
                     Bukkit.broadcastMessage("ゲーム開始まで: $count"+"秒")
                     count--
@@ -210,6 +229,10 @@ class Game {
 
     fun join(player: Player) {
         if (isStarted) {
+            if (survivor.contains(player.name) || killers.contains(player.name)) {
+                player.sendMessage("あなたは既にゲームに参加しています")
+                return
+            }
             gameTask.timeBar.addPlayer(player)
             deadSurvivor[player.name] = Survivor(player)
             deadSurvivor[player.name]?.initPlayer(map.getJail())
@@ -217,6 +240,8 @@ class Game {
             Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
             player.sendMessage("途中参加のため牢屋からスタートしました")
         } else {
+            if (killers.contains(player.name)) leave(player)
+
             Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
             survivor[player.name] = Survivor(player)
             player.playerListName = "[${ChatColor.BLUE}生存者${ChatColor.RESET}] ${player.name}"
