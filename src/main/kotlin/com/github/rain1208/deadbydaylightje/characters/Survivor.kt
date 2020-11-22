@@ -10,13 +10,14 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class Survivor(override val player: Player): IGamePlayer {
     private val baseRepairAbility = 1.0
-    private var originalRepairAbility = 0.0
+    private var originalRepairAbility = 49.0
 
     var hp = 2
 
     var hookCount = 0
     var rescueCount = 0
     var rescueCoolDown = false
+    var damageCoolDown = false
 
     var isHooked = false
 
@@ -42,6 +43,7 @@ class Survivor(override val player: Player): IGamePlayer {
 
     fun rescue(survivor: Survivor) {
         survivor.initPlayer(player.location)
+        survivor.hp = 1
         Bukkit.broadcastMessage(survivor.player.name + "がフックから救出された")
         setRescueCoolDown()
     }
@@ -64,7 +66,15 @@ class Survivor(override val player: Player): IGamePlayer {
         }
     }
 
-    fun addDamage() = hp--
+    fun addDamage() {
+        hp--
+        damageCoolDown = true
+        object : BukkitRunnable() {
+            override fun run() {
+                damageCoolDown = false
+            }
+        }.runTaskLater(DeadByDayLightJE.instance, 40)
+    }
 
     override fun onUse(generator: Generator) {
         generator.onActivate(baseRepairAbility + originalRepairAbility)

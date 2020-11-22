@@ -8,9 +8,9 @@ import org.bukkit.entity.ArmorStand
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerDropItemEvent
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.ItemStack
@@ -56,11 +56,20 @@ class GameEventListener(val game: Game): Listener {
     }
 
     @EventHandler
-    fun clickBlock(event: BlockDamageEvent) {
-        if (!game.deadSurvivor.contains(event.player.name)) return
-        if (event.block.location == game.map.respawnBlock) {
-            game.respawn(event.player)
+    fun clickBlock(event: PlayerInteractEvent) {
+        if (event.clickedBlock == null) return
+        if (game.deadSurvivor.contains(event.player.name)) {
+            if (event.clickedBlock.location == game.map.respawnBlock) {
+                game.respawn(event.player)
+            }
         }
+
+        if (game.survivor.containsKey(event.player.name)) {
+            if (event.clickedBlock.type == Material.EMERALD_BLOCK) {
+                game.escapee(event.player)
+            }
+        }
+        event.isCancelled = false
     }
 
     @EventHandler
@@ -71,11 +80,12 @@ class GameEventListener(val game: Game): Listener {
         if (atk !is Player) return
         if (dmg !is Player) return
 
-        if (game.isSurvivor(dmg) && game.isSurvivor(atk)) {
+        if (game.isSurvivor(atk)) {
             event.isCancelled = true
             return
         }
-        if (game.isSurvivor(atk) && game.isKiller(dmg)) {
+
+        if (game.isKiller(dmg)) {
             event.isCancelled = true
             return
         }
@@ -83,6 +93,7 @@ class GameEventListener(val game: Game): Listener {
         if(game.isKiller(atk) && game.isSurvivor(dmg)) {
             val surv = game.survivor[dmg.name]
             if (surv?.isHooked!!) return
+            if (surv.damageCoolDown) return
             surv.addDamage()
             if (surv.hp <= 0) {
                 surv.isHooked = true
