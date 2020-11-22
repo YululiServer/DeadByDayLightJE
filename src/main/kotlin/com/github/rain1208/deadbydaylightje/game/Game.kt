@@ -117,16 +117,25 @@ class Game {
         val db = DeadByDayLightJE.instance.dataBase
         for (survivor in survivor.values) {
             survivor.initPlayer(map.getSpawn())
-            if (!db.dataExists(survivor.player.name)) db.addPlayer(survivor.player.name)
-
-            db.addSurvivorCount(survivor.player.name)
         }
         for (killer in killers.values) {
             killer.initPlayer(map.getKillerSpawn())
-            if (!db.dataExists(killer.player.name)) db.addPlayer(killer.player.name)
-
-            db.addKillerCount(killer.player.name)
         }
+
+        object : BukkitRunnable() {
+            override fun run() {
+                for (surv in getSurvivors()) {
+                    if (!db.dataExists(surv.name)) db.addPlayer(surv.name)
+
+                    db.addSurvivorCount(surv.name)
+                }
+                for (killer in getKillers()) {
+                    if (!db.dataExists(killer.name)) db.addPlayer(killer.name)
+
+                    db.addKillerCount(killer.name)
+                }
+            }
+        }.runTaskAsynchronously(DeadByDayLightJE.instance)
     }
 
     fun stop() {

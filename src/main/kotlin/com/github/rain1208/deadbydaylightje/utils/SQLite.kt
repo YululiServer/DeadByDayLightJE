@@ -62,6 +62,7 @@ class SQLite(private val plugin: DeadByDayLightJE) {
 
     fun addSurvivorCount(name: String) {
         val cps = connection.prepareStatement("SELECT survivor_count from player_data WHERE name = ?")
+        cps.setString(1, name)
         val rs = cps.executeQuery()
         val count = rs.getInt(1)
 
@@ -76,6 +77,7 @@ class SQLite(private val plugin: DeadByDayLightJE) {
 
     fun addKillerCount(name: String) {
         val cps = connection.prepareStatement("SELECT killer_count from player_data WHERE name = ?")
+        cps.setString(1, name)
         val rs = cps.executeQuery()
         val count = rs.getInt(1)
 
@@ -90,6 +92,7 @@ class SQLite(private val plugin: DeadByDayLightJE) {
 
     fun addEscapeCount(name: String) {
         val cps = connection.prepareStatement("SELECT escape_count from player_data WHERE name = ?")
+        cps.setString(1, name)
         val rs = cps.executeQuery()
         val count = rs.getInt(1)
 
@@ -104,6 +107,7 @@ class SQLite(private val plugin: DeadByDayLightJE) {
 
     fun addKillerWin(name: String) {
         val cps = connection.prepareStatement("SELECT killer_win from player_data WHERE name = ?")
+        cps.setString(1, name)
         val rs = cps.executeQuery()
         val count = rs.getInt(1)
 
