@@ -25,6 +25,7 @@ class Generator(val armorStand: ArmorStand) {
                 game.getPlayer(entity)?.onUse(this)
             } else {
                 val n = (occupancyRate / 10).toInt()
+                if (n < 10 || n > 0) return
                 val msg = StringBuilder("修理率 :"+"■".repeat(n)+"□".repeat(10 - n)).toString()
                 entity.sendTitle("",msg,0,25,0)
             }
