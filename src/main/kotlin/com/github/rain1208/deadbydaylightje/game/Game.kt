@@ -114,11 +114,18 @@ class Game {
     }
 
     fun startPlayer() {
+        val db = DeadByDayLightJE.instance.dataBase
         for (survivor in survivor.values) {
             survivor.initPlayer(map.getSpawn())
+            if (!db.dataExists(survivor.player.name)) db.addPlayer(survivor.player.name)
+
+            db.addSurvivorCount(survivor.player.name)
         }
         for (killer in killers.values) {
             killer.initPlayer(map.getKillerSpawn())
+            if (!db.dataExists(killer.player.name)) db.addPlayer(killer.player.name)
+
+            db.addKillerCount(killer.player.name)
         }
     }
 
@@ -149,17 +156,24 @@ class Game {
     }
 
     fun result() {
+        val db = DeadByDayLightJE.instance.dataBase
+
         Bukkit.broadcastMessage(ChatColor.RED.toString() + "=".repeat(30) + ChatColor.RESET.toString())
         Bukkit.broadcastMessage(ChatColor.RED.toString() + " ".repeat(9) + "ゲーム終了" + ChatColor.RESET.toString())
         Bukkit.broadcastMessage(ChatColor.RED.toString() + "=".repeat(30) + ChatColor.RESET.toString())
         for (player in Bukkit.getOnlinePlayers()) {
             if (escapeSurvivor.count() <= 0) {
                 player.sendTitle("ゲーム終了!!!", ChatColor.RED.toString() + "キラー側の勝利",0,40,0)
+                for (killer in getKillers()) {
+                    db.addKillerWin(killer.name)
+                }
             } else {
                 player.sendTitle("ゲーム終了!!!", ChatColor.GREEN.toString() + "サバイバーが逃げ切った",0,40,0)
-                var message = ""
+                var message = "脱出したプレイヤー\n"
                 for (surv in escapeSurvivor) {
                     message += surv.player.name+ ", "
+
+                    db.addEscapeCount(surv.player.name)
                 }
                 Bukkit.broadcastMessage(message)
             }
@@ -179,8 +193,7 @@ class Game {
         footPointParticle.removePlayer(survivor.player)
     }
 
-    fun killLog(survivor: Player, killer: Player) =
-        killLog(survivor.name,killer.name)
+    fun killLog(survivor: Player, killer: Player) = killLog(survivor.name,killer.name)
 
     fun killLog(survivor: String, killer: String) =
             killLog( "${ChatColor.GREEN} $survivor${ChatColor.RESET} killed by ${ChatColor.RED}$killer")
