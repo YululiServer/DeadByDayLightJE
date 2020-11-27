@@ -5,6 +5,8 @@ api-version: 1.12
 commands:
   gamebook:
     description: ""
+  autocreate:
+    description: ""
   dcreate:
     description: ""
   dstart:

@@ -18,6 +18,8 @@ class DeadByDayLightJE : JavaPlugin() {
     lateinit var dataBase: SQLite
 
     private val commands = mapOf(
+            "gamebook" to GameBook,
+            "autocreate" to AutoCreateGame,
             "dcreate" to CreateGame,
             "dstart" to StartGame,
             "d_end" to EndGame,
