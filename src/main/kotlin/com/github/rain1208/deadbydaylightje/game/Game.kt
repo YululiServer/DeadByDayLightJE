@@ -76,8 +76,6 @@ class Game {
         if (box is Chest) {
             box.inventory.setItem(13, ItemStack(Material.BONE))
         }
-        
-        HandlerList.unregisterAll(DeadByDayLightJE.instance)
 
         Bukkit.getPluginManager().registerEvents(GameEventListener(this), DeadByDayLightJE.instance)
         Bukkit.broadcastMessage("ゲームを開始します")

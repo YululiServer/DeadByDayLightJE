@@ -11,11 +11,14 @@ class EventListener: Listener {
     fun onJoin(event: PlayerJoinEvent) {
         val game = DeadByDayLightJE.instance.game
         game?.join(event.player)
-        object : BukkitRunnable() {
-            override fun run() {
 
-            }
-        }.runTaskLater(DeadByDayLightJE.instance,20*60)
+        if(!game?.isStarted!!) {
+            object : BukkitRunnable() {
+                override fun run() {
+                    //ルールの表示
+                }
+            }.runTaskLater(DeadByDayLightJE.instance,20*60)
+        }
     }
 
     @EventHandler

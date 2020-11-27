@@ -21,12 +21,6 @@ import org.bukkit.scheduler.BukkitRunnable
 class GameEventListener(val game: Game): Listener {
 
     @EventHandler
-    fun onJoin(event: PlayerJoinEvent) = game.join(event.player)
-
-    @EventHandler
-    fun onLeave(event: PlayerQuitEvent) = game.leave(event.player)
-
-    @EventHandler
     fun onDropItem(event: PlayerDropItemEvent) {
         if (event.itemDrop.itemStack.type == Material.IRON_AXE) {
             val stand = event.player.world.spawn(event.player.location.add(event.player.location.direction), ArmorStand::class.java)
