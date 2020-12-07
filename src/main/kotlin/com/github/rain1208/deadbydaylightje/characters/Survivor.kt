@@ -76,13 +76,8 @@ class Survivor(override val player: Player): IGamePlayer {
         }.runTaskLater(DeadByDayLightJE.instance, 40)
     }
 
-    override fun onUse(generator: Generator) {
+    override fun onUse(generator: Generator) =
         generator.onActivate(baseRepairAbility + originalRepairAbility)
-        val n = (generator.occupancyRate / 10).toInt()
-        val msg = StringBuilder("修理率 :"+"■".repeat(n)+"□".repeat(10 - n)).toString()
-
-        player.sendTitle("", msg,0,20,0)
-    }
 
     fun repairComplete() {
         player.resetTitle()

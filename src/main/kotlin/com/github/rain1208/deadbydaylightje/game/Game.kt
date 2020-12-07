@@ -51,7 +51,7 @@ class Game {
 
         //発電機の召喚
         for (loc in map.generatorPoint) {
-            generators.add(Generator(loc.world.spawn(loc,ArmorStand::class.java)))
+            generators.add(Generator(loc))
             generatorCount++
         }
 
@@ -145,9 +145,7 @@ class Game {
             HandlerList.unregisterAll(DeadByDayLightJE.instance)
             DeadByDayLightJE.instance.server.pluginManager.registerEvents(EventListener(),DeadByDayLightJE.instance)
             footPointParticle.cancel()
-            for (generator in generators) {
-                generator.armorStand.remove()
-            }
+
             for (lever in levers) {
                 lever.armorStand.remove()
             }
