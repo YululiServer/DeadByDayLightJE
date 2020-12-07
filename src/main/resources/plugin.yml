@@ -4,14 +4,19 @@ main: com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 api-version: 1.12
 commands:
   gamebook:
+    aliases: ["book"]
     description: ""
   autocreate:
+    aliases: ["ac"]
     description: ""
   dcreate:
+    aliases: ["create"]
     description: ""
   dstart:
+    aliases: ["start"]
     description: ""
   d_end:
+    aliases: ["end"]
     description: ""
   dstop:
     description: ""

@@ -1,5 +1,6 @@
 package com.github.rain1208.deadbydaylightje.maps
 
+import com.github.rain1208.deadbydaylightje.DeadByDayLightJE
 import com.github.rain1208.deadbydaylightje.game.Game
 import org.bukkit.Bukkit
 import org.bukkit.Particle
@@ -27,7 +28,7 @@ class Generator(val armorStand: ArmorStand) {
                 val n = (occupancyRate / 10).toInt()
                 if (n < 10 || n > 0) return
                 val msg = StringBuilder("修理率 :"+"■".repeat(n)+"□".repeat(10 - n)).toString()
-                entity.sendTitle("",msg,0,25,0)
+                entity.sendTitle("",msg,0,20,0)
             }
         }
 
@@ -40,6 +41,7 @@ class Generator(val armorStand: ArmorStand) {
             isAlive = false
             armorStand.remove()
             game.generatorCount--
+            armorStand.world.playSound(armorStand.location,Sound.BLOCK_ANVIL_USE,3f,1f)
             armorStand.world.spawnParticle(Particle.CRIT_MAGIC,armorStand.location,1)
             Bukkit.broadcastMessage("発電が完了しました")
             return

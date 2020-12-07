@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class Survivor(override val player: Player): IGamePlayer {
     private val baseRepairAbility = 1.0
-    private var originalRepairAbility = 49.0
+    private var originalRepairAbility = 24.0
 
     var hp = 2
 

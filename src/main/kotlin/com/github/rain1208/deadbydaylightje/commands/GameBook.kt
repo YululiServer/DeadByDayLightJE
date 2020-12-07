@@ -18,11 +18,8 @@ object GameBook: CommandExecutor {
         if (sender !is Player) return true
 
         val book = ItemStack(Material.WRITTEN_BOOK)
-        val meta = book.itemMeta as BookMeta
-        meta.displayName = "ゲーム Book"
-        meta.title = "ゲーム Book"
 
-        book.itemMeta = meta
+        book.itemMeta = getContents()
         sender.inventory.addItem(book)
 
         return true
@@ -37,27 +34,21 @@ object GameBook: CommandExecutor {
 
         meta.spigot().pages = mutableListOf()
 
-        val game = DeadByDayLightJE.instance.game
+        val start = TextComponent(ChatColor.DARK_AQUA.toString() + ChatColor.BOLD.toString() + "    ゲームを開始する")
+        start.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dstart")
+        meta.spigot().addPage(arrayOf(TextComponent("\n\n\n"),start))
 
-        if (game !is Game) {
-            val create = TextComponent("[作成]")
-            create.color = ChatColor.GREEN
-            create.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND,"/dcreate")
-            val message = TextComponent("ゲームを作成する : ")
-            message.addExtra(create)
-            meta.spigot().addPage(arrayOf(message))
-        } else {
-            /*
-        ゲームスタート
-        キラー サバイバー
-        ワールドの情報
-        自動でゲームを作るかの設定
-         */
-        }
+        val create = TextComponent("[作成]")
+        create.color = ChatColor.GREEN
+        create.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/dcreate")
+        val message = TextComponent("ゲームを作成する : ")
+        message.addExtra(create)
+        meta.spigot().addPage(arrayOf(message))
 
-        val auto = TextComponent(if (!DeadByDayLightJE.instance.autoStart()) "ON" else "OFF")
-        auto.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND,"/autocreate")
-        val msg = TextComponent("ゲームの自動更新 : ")
+        val auto = TextComponent("[切り替え]")
+        auto.clickEvent = ClickEvent(ClickEvent.Action.RUN_COMMAND, "/autocreate")
+        auto.color = ChatColor.GREEN
+        val msg = TextComponent("ゲームの自動更新:")
         msg.addExtra(auto)
         meta.spigot().addPage(arrayOf(msg))
 

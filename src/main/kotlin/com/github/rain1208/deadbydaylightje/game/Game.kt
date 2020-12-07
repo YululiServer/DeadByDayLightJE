@@ -203,10 +203,9 @@ class Game {
     fun killLog(survivor: Player, killer: Player) = killLog(survivor.name,killer.name)
 
     fun killLog(survivor: String, killer: String) =
-            killLog( "${ChatColor.GREEN} $survivor${ChatColor.RESET} killed by ${ChatColor.RED}$killer")
+            sendLog("${ChatColor.GREEN} $survivor${ChatColor.RESET} killed by ${ChatColor.RED}$killer")
 
-
-    fun killLog(title: String) {
+    fun sendLog(title: String) {
         val log = KillLog()
         log.setTitle(" ".repeat(70)+title)
         log.show()
@@ -222,6 +221,7 @@ class Game {
         survivor.remove(surv.player.name)
         deadSurvivor[surv.player.name] = surv
         Bukkit.broadcastMessage(surv.player.name +"が牢屋に送られました")
+        sendLog("") //TODO("牢屋に送られたときのメッセージ")
         surv.player.teleport(map.getJail())
     }
 
@@ -270,7 +270,7 @@ class Game {
             Bukkit.broadcastMessage("${player.name} さんが途中参加しました")
             player.sendMessage("途中参加のため牢屋からスタートしました")
         } else {
-            if (killers.contains(player.name)) leave(player)
+            //if (killers.contains(player.name)) leave(player)
 
             Bukkit.broadcastMessage("サバイバー: ${player.name} さんがゲームに参加しました")
             survivor[player.name] = Survivor(player)
