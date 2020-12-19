@@ -6,7 +6,7 @@ import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
 
-class Generator(val pos: Location) {
+class Generator(private val pos: Location) {
     var occupancyRate: Double = 0.0
     var isAlive = true
 
@@ -19,8 +19,9 @@ class Generator(val pos: Location) {
             if (entity.isSneaking) {
                 game.getPlayer(entity)?.onUse(this)
             }
-            val n = (occupancyRate / 10).toInt()
-            if (n < 10 || n > 0) return
+            var n = (occupancyRate / 10).toInt()
+            if (n >= 10) n = 10
+            if (n <= 0) n = 0
             val msg = StringBuilder("修理率 :" + "■".repeat(n) + "□".repeat(10 - n)).toString()
             entity.sendTitle("", msg, 0, 20, 0)
         }
@@ -40,9 +41,8 @@ class Generator(val pos: Location) {
         }
     }
 
-    private fun sendParticle() {
-        pos.world.spawnParticle(Particle.PORTAL, pos.add(0.0, 0.5, 0.0), 5)
-    }
+    private fun sendParticle() =
+        pos.world.spawnParticle(Particle.PORTAL, pos,5,0.1,0.0,0.1)
 
     fun onBreak(breakAbility: Double) {
         pos.world.playSound(pos, Sound.ENTITY_GENERIC_EXPLODE, 2f, 1f)
