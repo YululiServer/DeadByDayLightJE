@@ -1,32 +1,18 @@
-name: DeadByDayLightJE
+name: DeadByDayLightJE2
 version: @version@
-main: com.github.rain1208.deadbydaylightje.DeadByDayLightJE
-api-version: 1.12
+main: com.github.rain1208.deadbydaylightje2.DeadByDayLightJE2
+
 commands:
-  gamebook:
-    aliases: ["book"]
+  start:
     description: ""
-  autocreate:
-    aliases: ["ac"]
-    description: ""
-  dcreate:
-    aliases: ["create"]
-    description: ""
-  dstart:
-    aliases: ["start"]
-    description: ""
-  d_end:
-    aliases: ["end"]
-    description: ""
-  dstop:
-    description: ""
-  oni:
-    description: ""
+    permission: op
   join:
     description: ""
   leave:
     description: ""
-  config:
+  map:
     description: ""
-  dstatus:
+    permission: op
+  autocreate:
     description: ""
+    permission: op
