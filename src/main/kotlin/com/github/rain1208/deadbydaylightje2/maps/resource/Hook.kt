@@ -1,47 +1,46 @@
 package com.github.rain1208.deadbydaylightje2.maps.resource
 
-import com.github.rain1208.deadbydaylightje2.DeadByDayLightJE2
 import com.github.rain1208.deadbydaylightje2.characters.Survivor
 import com.github.rain1208.deadbydaylightje2.game.Game
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.entity.Player
+import java.util.*
 
-class Hook(override val pos: Location): Usable {
-    override var occupancyRate: Double = 0.0
+class Hook(override val pos: Location): GameResource {
     override var isAlive: Boolean = true
-    override val range: Double = 2.0
+    var range = 2.0
 
-    var player: MutableList<Survivor> = mutableListOf()
+    private val players: MutableMap<UUID,Survivor> = mutableMapOf()
+    private val rescuePlayer: MutableMap<UUID,UUID> = mutableMapOf()
 
     override fun baseTick(game: Game) {
-        val nearPlayer = Bukkit.getOnlinePlayers().filter { pos.distance(it.location) <= range }
+        if (players.isEmpty()) return
+
+        val nearPlayer = Bukkit.getOnlinePlayers().filter { pos.distance(it.location) <= range }.filterNot { players.contains(it.uniqueId) }
+
         for (player in nearPlayer) {
             if (player.isSneaking) {
                 game.getSurvivor(player.uniqueId)?.onUse(this)
             }
         }
-        for (hookSurvivor in player) {
-        }
     }
 
+    fun rescue(player: Player) {
 
+    }
 
-    fun breakHook() {
+    /*fun breakHook() {
         isAlive = false
         object : BukkitRunnable() {
             override fun run() {
                 isAlive = true
             }
         }.runTaskLaterAsynchronously(DeadByDayLightJE2.instance, 200)
-    }
-
-    override fun repairComplete(game: Game) {
-        TODO("Not yet implemented")
-    }
+    }*/
 
     fun setHook(survivor: Survivor) {
-        player.add(survivor)
+        players[survivor.player.uniqueId] = survivor
         survivor.isHooked = true
         survivor.player.teleport(pos)
     }

@@ -3,13 +3,13 @@ package com.github.rain1208.deadbydaylightje2.maps.resource
 import com.github.rain1208.deadbydaylightje2.game.Game
 import org.bukkit.*
 
-interface Usable {
-    val pos: Location
-    var isAlive: Boolean
+interface Usable: GameResource {
+    override val pos: Location
+    override var isAlive: Boolean
     var occupancyRate: Double
     val range: Double
 
-    fun baseTick(game: Game) {
+    override fun baseTick(game: Game) {
         val nearPlayer = Bukkit.getOnlinePlayers().filter { pos.distance(it.location) <= range }
         if (!isAlive) {
             for (player in nearPlayer) {

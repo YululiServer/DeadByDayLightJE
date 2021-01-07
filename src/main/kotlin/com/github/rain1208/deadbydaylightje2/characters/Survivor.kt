@@ -23,10 +23,8 @@ class Survivor(override val player: Player) : IGamePlayer {
 
     var health = 2
 
-    var hook = 0
-    var rescue = 0
-
-    var rescuePlayer:Survivor? = null
+    var hookCount = 0
+    var rescueCount = 0
 
     var isHooked = false
 
@@ -43,8 +41,8 @@ class Survivor(override val player: Player) : IGamePlayer {
 
         health = 2
 
-        hook = 0
-        rescue = 0
+        hookCount = 0
+        rescueCount = 0
 
         isHooked = false
 

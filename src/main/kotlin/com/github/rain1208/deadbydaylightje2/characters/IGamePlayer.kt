@@ -1,21 +1,19 @@
 package com.github.rain1208.deadbydaylightje2.characters
 
-import com.github.rain1208.deadbydaylightje2.maps.resource.Generator
-import com.github.rain1208.deadbydaylightje2.maps.resource.Hook
-import com.github.rain1208.deadbydaylightje2.maps.resource.Lever
-import com.github.rain1208.deadbydaylightje2.maps.resource.Usable
+import com.github.rain1208.deadbydaylightje2.maps.resource.*
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import java.util.*
 
 interface IGamePlayer {
     val player: Player
 
     fun initPlayer(spawn: Location)
 
-    fun onUse(usable: Usable) {
-        if (usable is Generator) useGenerator(usable)
-        if (usable is Lever) useLever(usable)
-        if (usable is Hook) useHook(usable)
+    fun onUse(resource: GameResource) {
+        if (resource is Generator) useGenerator(resource)
+        if (resource is Lever) useLever(resource)
+        if (resource is Hook) useHook(resource)
     }
 
     fun useGenerator(generator: Generator)
