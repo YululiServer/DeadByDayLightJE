@@ -2,9 +2,9 @@ package com.github.rain1208.deadbydaylightje2.maps.resource
 
 import com.github.rain1208.deadbydaylightje2.characters.Survivor
 import com.github.rain1208.deadbydaylightje2.game.Game
+import com.github.rain1208.deadbydaylightje2.game.GameSetting
 import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.entity.Player
 import java.util.*
 
 class Hook(override val pos: Location): GameResource {
@@ -12,7 +12,8 @@ class Hook(override val pos: Location): GameResource {
     var range = 2.0
 
     private val players: MutableMap<UUID,Survivor> = mutableMapOf()
-    private val rescuePlayer: MutableMap<UUID,UUID> = mutableMapOf()
+    private val rescue: MutableList<UUID> = mutableListOf()
+    private var rescuea: MutableList<UUID> = mutableListOf()
 
     override fun baseTick(game: Game) {
         if (players.isEmpty()) return
@@ -24,10 +25,28 @@ class Hook(override val pos: Location): GameResource {
                 game.getSurvivor(player.uniqueId)?.onUse(this)
             }
         }
+        rescuea = rescue
+        rescue.clear()
     }
 
-    fun rescue(player: Player) {
+    fun rescue(survivor: Survivor) {
+        if (rescuea.contains(survivor.player.uniqueId)) {
+            survivor.rescueCount = 0
+            rescue.add(survivor.player.uniqueId)
+        }
+        survivor.rescueCount++
 
+        if (survivor.rescueCount >= GameSetting.rescueTime) {
+            val player = getRandomHookPlayer() ?: return
+            player.initPlayer(survivor.player.location)
+            player.health = 1
+            survivor.setRescueCoolDown()
+        }
+    }
+
+    fun getRandomHookPlayer(): Survivor? {
+        val key = players.keys.toList()[Random().nextInt(players.size)]
+        return players[key]
     }
 
     /*fun breakHook() {

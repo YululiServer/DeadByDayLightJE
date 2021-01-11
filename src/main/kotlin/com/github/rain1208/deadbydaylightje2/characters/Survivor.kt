@@ -5,7 +5,6 @@ import com.github.rain1208.deadbydaylightje2.game.Game
 import com.github.rain1208.deadbydaylightje2.maps.resource.Generator
 import com.github.rain1208.deadbydaylightje2.maps.resource.Hook
 import com.github.rain1208.deadbydaylightje2.maps.resource.Lever
-import com.github.rain1208.deadbydaylightje2.maps.resource.Usable
 import org.bukkit.ChatColor
 import org.bukkit.GameMode
 import org.bukkit.Location
@@ -74,6 +73,15 @@ class Survivor(override val player: Player) : IGamePlayer {
         }.runTaskLaterAsynchronously(DeadByDayLightJE2.instance,200)
     }
 
+    fun setRescueCoolDown() {
+        rescueCoolDown = true
+        object : BukkitRunnable() {
+            override fun run() {
+                rescueCoolDown = false
+            }
+        }.runTaskLaterAsynchronously(DeadByDayLightJE2.instance,200)
+    }
+
     override fun useGenerator(generator: Generator) =
         generator.onActivate(baseRepairAbility + originalRepairAbility)
 
@@ -82,6 +90,8 @@ class Survivor(override val player: Player) : IGamePlayer {
         lever.onActivate(baseLeverActivateAbility + originalLeverActivateAbility)
 
     override fun useHook(hook: Hook) {
+        if (rescueCoolDown) return
+        hook.rescue(this)
     }
 
 
