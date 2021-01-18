@@ -3,7 +3,6 @@ package com.github.rain1208.deadbydaylightje2.characters
 import com.github.rain1208.deadbydaylightje2.maps.resource.*
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import java.util.*
 
 interface IGamePlayer {
     val player: Player

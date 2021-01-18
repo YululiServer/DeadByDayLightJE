@@ -8,7 +8,7 @@ import java.io.IOException
 import java.util.logging.Level
 
 class CustomConfig(private val plugin: DeadByDayLightJE2, private val name: String) {
-    val file = File(plugin.dataFolder,name)
+    private val file = File(plugin.dataFolder,name)
     val config: FileConfiguration = YamlConfiguration.loadConfiguration(file)
 
     init {

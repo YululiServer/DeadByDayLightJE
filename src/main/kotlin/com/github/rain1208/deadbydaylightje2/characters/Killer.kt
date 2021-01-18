@@ -3,7 +3,6 @@ package com.github.rain1208.deadbydaylightje2.characters
 import com.github.rain1208.deadbydaylightje2.maps.resource.Generator
 import com.github.rain1208.deadbydaylightje2.maps.resource.Hook
 import com.github.rain1208.deadbydaylightje2.maps.resource.Lever
-import com.github.rain1208.deadbydaylightje2.maps.resource.Usable
 import org.bukkit.Location
 import org.bukkit.entity.Player
 

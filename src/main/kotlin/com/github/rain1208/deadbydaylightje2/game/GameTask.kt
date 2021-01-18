@@ -1,6 +1,5 @@
 package com.github.rain1208.deadbydaylightje2.game
 
-import com.github.rain1208.deadbydaylightje2.characters.Survivor
 import com.github.rain1208.deadbydaylightje2.maps.resource.Generator
 import org.bukkit.scheduler.BukkitRunnable
 

@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 
 object AutoCreateGame: CommandExecutor, TabCompleter {
-    val bool = arrayListOf("true", "false")
+    private val bool = arrayListOf("true", "false")
     override fun onTabComplete(sender: CommandSender?, command: Command?, alias: String?, args: Array<out String>?): MutableList<String> {
         return bool
     }
