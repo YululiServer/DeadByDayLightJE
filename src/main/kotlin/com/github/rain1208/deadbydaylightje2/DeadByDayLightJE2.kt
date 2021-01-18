@@ -23,9 +23,12 @@ class DeadByDayLightJE2 : JavaPlugin() {
 
     private val commands = mapOf(
         "autocreate" to AutoCreateGame,
+        "creategame" to CreateGameCommand,
         "start" to StartGameCommand,
+        "stop" to StopGameCommand,
         "join" to JoinGameCommand,
         "leave" to LeaveGameCommand,
+        "oni" to SetKillerCommand,
         "map" to ChooseMapCommand
     )
 

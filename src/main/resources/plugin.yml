@@ -16,3 +16,12 @@ commands:
   autocreate:
     description: ""
     permission: op
+  creategame:
+    description: ""
+    permission: op
+  stopgame:
+    permission: op
+    aliases: ["stopg"]
+  oni:
+    description: ""
+    permission: op
