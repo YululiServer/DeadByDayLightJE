@@ -27,7 +27,7 @@ class GameTimer(val game: Game): BukkitRunnable() {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR,text)
                 }
 
-                timeBar.title = "§9生存者§r ${game.survivor.size} | 残り時間 ${getTimeText()} | §c殺人鬼§r ${game.killers.size}"
+                timeBar.title = "§9生存者§r ${game.survivors.size} | 残り時間 ${getTimeText()} | §c殺人鬼§r ${game.killers.size}"
                 timeBar.progress = time / 900.0
                 time--
 
@@ -36,7 +36,7 @@ class GameTimer(val game: Game): BukkitRunnable() {
                 }
             }
             Game.LAST_PHASE -> {
-                timeBar.title = "§9生存者§r ${game.survivor.size} | 残り時間 ${getTimeText()} | §c殺人鬼§r ${game.killers.size}"
+                timeBar.title = "§9生存者§r ${game.survivors.size} | 残り時間 ${getTimeText()} | §c殺人鬼§r ${game.killers.size}"
                 timeBar.progress = time / 60.0
                 time--
 

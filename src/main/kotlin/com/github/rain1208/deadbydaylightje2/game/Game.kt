@@ -21,7 +21,7 @@ class Game {
         const val LAST_PHASE = 2
     }
 
-    val survivor: MutableMap<UUID, Survivor> = mutableMapOf()
+    val survivors: MutableMap<UUID, Survivor> = mutableMapOf()
     val killers: MutableMap<UUID, Killer> = mutableMapOf()
 
     val deadSurvivor: MutableMap<UUID, Survivor> = mutableMapOf()
@@ -122,7 +122,7 @@ class Game {
 
     fun join(player: Player) {
         if (killers.contains(player.uniqueId)) leave(player)
-        survivor[player.uniqueId] = Survivor(player)
+        survivors[player.uniqueId] = Survivor(player)
 
         gameTimer.timeBar.addPlayer(player)
 
@@ -130,8 +130,8 @@ class Game {
     }
 
     fun leave(player: Player) {
-        if (survivor.contains(player.uniqueId)) {
-            survivor.remove(player.uniqueId)
+        if (survivors.contains(player.uniqueId)) {
+            survivors.remove(player.uniqueId)
             broadcastMessage("サバイバー: ${player.name}が退出した")
         }
         if (killers.contains(player.uniqueId)) {
@@ -141,14 +141,19 @@ class Game {
     }
 
     fun getPlayer(uuid: UUID): IGamePlayer? {
-        if (survivor.contains(uuid)) return survivor[uuid]
+        if (survivors.contains(uuid)) return survivors[uuid]
         if (killers.contains(uuid)) return killers[uuid]
         return null
     }
 
     fun getSurvivor(uuid: UUID): Survivor? {
-        if (survivor.contains(uuid)) return survivor[uuid]
+        if (survivors.contains(uuid)) return survivors[uuid]
         return null
+    }
+
+    fun setKiller(player: Player) {
+        leave(player)
+        killers[player.uniqueId] = Killer(player)
     }
 
     fun getKiller(uuid: UUID): Killer? {
